@@ -1,29 +1,30 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Friweika WorkTool</title>
 <style>
   :root { --yellow:#ffd84c; --red:#c92a2a; --bg:#fff9e6; --text:#3b2f2f; }
+  *{box-sizing:border-box}
   body{margin:0;font-family: "Segoe UI", Roboto, Arial, sans-serif;background:var(--bg);color:var(--text)}
-  header{background:linear-gradient(90deg,var(--red),#ff7043);color:#fff;text-align:center;padding:20px}
-  header h1{margin:0;font-size:24px}
-  .welcome{text-align:center;padding:30px 20px}
-  .welcome h2{color:var(--red)}
-  .start-btn{background:var(--yellow);border:none;padding:12px 22px;border-radius:10px;font-size:16px;font-weight:700;color:var(--red);cursor:pointer}
-  .container{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.15);padding:20px;display:none}
+  header{background:linear-gradient(90deg,var(--red),#ff7043);color:#fff;text-align:center;padding:18px}
+  header h1{margin:0;font-size:22px}
+  .welcome{text-align:center;padding:26px 18px}
+  .welcome h2{color:var(--red);margin:0 0 10px}
+  .start-btn{background:var(--yellow);border:none;padding:10px 18px;border-radius:10px;font-size:15px;font-weight:700;color:var(--red);cursor:pointer}
+  .container{max-width:760px;margin:18px auto;background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.12);padding:18px;display:none}
   label{display:block;margin-top:10px;font-weight:700;color:var(--red)}
-  select,textarea,button{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-top:5px;font-size:15px}
-  textarea{resize:vertical;min-height:80px}
-  button.translate-btn{background:var(--red);color:#fff;border:none;font-weight:700;margin-top:10px;cursor:pointer}
-  footer{text-align:center;font-size:13px;color:#555;margin-top:40px;padding:10px}
-  .offline-message{display:none;text-align:center;background:#ffcccc;color:#700;padding:8px;border-radius:8px;margin-bottom:12px}
-  .help-row{display:flex;gap:10px;margin-top:8px}
-  .help-btn{flex:1;padding:8px;border-radius:8px;border:none;cursor:pointer}
-  .help-btn.secondary{background:#eee}
-  .note{font-size:13px;color:#666;margin-top:8px}
+  select,textarea,button,input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-top:5px;font-size:15px}
+  textarea{resize:vertical;min-height:100px}
+  .help-row{display:flex;gap:10px;margin-top:12px}
+  .help-row button{flex:1}
+  .translate-btn{background:var(--red);color:#fff;border:none;font-weight:700;cursor:pointer;padding:12px;border-radius:8px}
+  .secondary{background:#eee;border:none;cursor:pointer;border-radius:8px;padding:10px}
+  .offline-message{display:none;text-align:center;background:#ffefef;color:#700;padding:8px;border-radius:8px;margin-bottom:12px}
+  .note{font-size:13px;color:#666;margin-top:10px}
   .small-muted{font-size:12px;color:#666;margin-top:6px}
+  .result-box{margin-top:12px}
 </style>
 </head>
 <body>
@@ -31,15 +32,15 @@
 <header><h1>Friweika WorkTool</h1></header>
 
 <div class="welcome" id="welcome">
-  <h2>Witaj w Friweika WorkTool!<br/>Willkommen bei Friweika WorkTool!</h2>
-  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie.<br/>Gib deinen Text ein, wähle eine Sprache und sieh die Übersetzung.</p>
-  <button class="start-btn" onclick="startApp()">Rozpocznij pracę / Arbeit beginnen</button>
+  <h2>Witaj w Friweika WorkTool!</h2>
+  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie (tekstowe).<br/>Prosty prototyp (wersja testowa).</p>
+  <button class="start-btn" onclick="startApp()">Rozpocznij</button>
 </div>
 
 <div class="container" id="translator">
-  <div class="offline-message" id="offlineMsg">Brak połączenia – tłumaczenie offline niedostępne.</div>
+  <div class="offline-message" id="offlineMsg">Brak połączenia — tłumaczenie online niedostępne.</div>
 
-  <label for="langFrom">Język źródłowy:</label>
+  <label for="langFrom">Język źródłowy (source):</label>
   <select id="langFrom">
     <option value="pl">Polski</option>
     <option value="de">Niemiecki</option>
@@ -48,7 +49,7 @@
     <option value="ar">Arabski</option>
   </select>
 
-  <label for="langTo">Język docelowy:</label>
+  <label for="langTo">Język docelowy (target):</label>
   <select id="langTo">
     <option value="de">Niemiecki</option>
     <option value="pl">Polski</option>
@@ -62,12 +63,123 @@
 
   <div class="help-row">
     <button class="translate-btn" onclick="translateText()">Tłumacz</button>
-    <button class="help-btn secondary" onclick="openGoogleTranslate()">Otwórz Google Translate</button>
+    <button class="secondary" onclick="openGoogleTranslate()">Otwórz Google Translate</button>
   </div>
 
-  <label for="translatedText">Tłumaczenie:</label>
-  <textarea id="translatedText" readonly></textarea>
+  <div class="result-box">
+    <label for="translatedText">Tłumaczenie:</label>
+    <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
+    <div class="note" id="debugNote"></div>
+  </div>
 
+  <div class="small-muted">
+    Uwaga: podczas testów aplikacja tłumaczy dwuetapowo: (język źródłowy → angielski → język docelowy).  
+    (To pomaga czasem uzyskać lepsze tłumaczenie pomiędzy mniej popularnymi parami językowymi.)
+  </div>
+</div>
+
+<footer style="text-align:center;padding:12px;font-size:13px;color:#666">Projekt wewnętrzny Friweika eG — wersja testowa</footer>
+
+<script>
+/*
+  Ważne (prosto):
+  - proxy (pośrednik) = /api/translate  (to nasza funkcja na Vercel).
+  - Jeśli chcesz testować lokalnie bez proxy, użyj przycisku "Otwórz Google Translate".
+*/
+const PRIMARY_ENDPOINT = "/api/translate"; // (endpoint = adres naszej funkcji proxy)
+
+function startApp(){
+  document.getElementById("welcome").style.display = "none";
+  document.getElementById("translator").style.display = "block";
+}
+
+/* Pomocniczne funkcje */
+function setDebug(text){
+  const el = document.getElementById("debugNote");
+  el.textContent = text || "";
+}
+
+function showOffline(msg){
+  document.getElementById("offlineMsg").style.display = msg ? "block" : "none";
+  if(msg) setDebug(msg);
+}
+
+/* Główna funkcja tłumacząca */
+async function translateText(){
+  const srcText = document.getElementById("sourceText").value.trim();
+  const langFrom = document.getElementById("langFrom").value;
+  const langTo = document.getElementById("langTo").value;
+  const output = document.getElementById("translatedText");
+
+  if(!srcText){
+    alert("Wpisz tekst do tłumaczenia.");
+    return;
+  }
+
+  // Sprawdzenie, czy mamy internet
+  if(!navigator.onLine){
+    showOffline("Brak połączenia sieciowego. Spróbuj później lub użyj Google Translate.");
+    output.value = "";
+    return;
+  } else {
+    showOffline("");
+  }
+
+  output.value = "Tłumaczę...";
+  setDebug("");
+
+  try {
+    // 1) najpierw na angielski (pośrednio)
+    const r1 = await fetch(PRIMARY_ENDPOINT, {
+      method: "POST", // (POST = sposób wysyłania danych, tu wymagany)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ q: srcText, source: langFrom, target: "en" })
+    });
+
+    if(!r1.ok){
+      // Spróbuj odczytać treść odpowiedzi (jeśli jest)
+      const t = await r1.text();
+      throw new Error("Błąd endpointu (krok 1): " + r1.status + " — " + t);
+    }
+    const j1 = await r1.json();
+    const eng = j1.translatedText || "";
+
+    // 2) z angielskiego do docelowego
+    const r2 = await fetch(PRIMARY_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ q: eng, source: "en", target: langTo })
+    });
+
+    if(!r2.ok){
+      const t2 = await r2.text();
+      throw new Error("Błąd endpointu (krok 2): " + r2.status + " — " + t2);
+    }
+    const j2 = await r2.json();
+    output.value = j2.translatedText || "[Brak rezultatu]";
+
+  } catch (err) {
+    console.warn("Tłumaczenie error:", err);
+    output.value = "Błąd połączenia z serwerem tłumaczenia.";
+    setDebug("Szczegóły: " + (err.message || err));
+  }
+}
+
+/* Fallback: otwórz Google Translate (szybko, gdy proxy niedostępne) */
+function openGoogleTranslate(){
+  const srcText = encodeURIComponent(document.getElementById("sourceText").value || "");
+  const langFrom = document.getElementById("langFrom").value;
+  const langTo = document.getElementById("langTo").value;
+  const googleMap = {pl:"pl", de:"de", en:"en", uk:"uk", ar:"ar"};
+  const from = googleMap[langFrom] || "auto";
+  const to = googleMap[langTo] || "en";
+  const url = "https://translate.google.com/?sl=" + from + "&tl=" + to + "&text=" + srcText + "&op=translate";
+  window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
   <div class="note">
     Jeśli tłumaczenie online nie zadziała (publiczne serwisy mogą być czasem niedostępne lub blokować połączenia), użyj przycisku „Otwórz Google Translate”.
   </div>
