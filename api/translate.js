@@ -1,47 +1,21 @@
-// api/translate.js (CommonJS - prostsza wersja dla Vercel)
-module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    res.statusCode = 405;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ error: 'Only POST allowed' }));
-    return;
+// api/translate.js
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Dozwolone tylko POST" });
   }
+
+  const { q, source, target } = req.body;
+
   try {
-    // Odczyt ciała request (działa w tym środowisku)
-    const body = await new Promise((resolve) => {
-      let data = '';
-      req.on('data', chunk => data += chunk);
-      req.on('end', () => resolve(JSON.parse(data || '{}')));
+    const response = await fetch("https://libretranslate.de/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ q, source, target, format: "text" })
     });
 
-    const q = body.q || '';
-    const source = body.source || 'auto';
-    const target = body.target || 'en';
-
-    const TRANSLATE_URL = 'https://libretranslate.de/translate';
-
-    // fetch powinien być dostępny w runtime Vercel; jeśli nie, powiemy jak dodać node-fetch
-    const resp = await fetch(TRANSLATE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ q, source, target, format: 'text' })
-    });
-
-    if (!resp.ok) {
-      const text = await resp.text();
-      res.statusCode = 502;
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ error: 'Bad gateway', details: text }));
-      return;
-    }
-
-    const json = await resp.json();
-    res.setHeader('Content-Type', 'application/json');
-    res.statusCode = 200;
-    res.end(JSON.stringify(json));
+    const data = await response.json();
+    return res.status(200).json(data);
   } catch (err) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ error: err.message }));
-  }
-};
+    return res.status(500).json({ error: "Błąd połączenia z LibreTranslate", details: err.message });
+   }
+ }
