@@ -1,21 +1,57 @@
 // api/translate.js
 export default async function handler(req, res) {
+  // Akceptujemy tylko POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Dozwolone tylko POST" });
   }
 
-  const { q, source, target } = req.body;
+  // Zabezpieczenie: body musi mieć q, source, target
+  const { q, source, target } = req.body || {};
+  if (!q || !source || !target) {
+    return res.status(400).json({ error: "Brak parametrów q/source/target" });
+  }
 
   try {
-    const response = await fetch("https://libretranslate.de/translate", {
+    // Używamy publicznego endpointu LibreTranslate
+    const libreUrl = "https://libretranslate.de/translate";
+
+    const r = await fetch(libreUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q, source, target, format: "text" })
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        q: q,
+        source: source,
+        target: target,
+        format: "text"
+      }),
+      // timeout? Vercel fetch domyślnie ma limit; nie dodajemy tu dodatkowego timeoutu
     });
 
-    const data = await response.json();
+    // Jeżeli API zwraca status inny niż 200, odczytujemy treść i zwracamy szczegóły
+    if (!r.ok) {
+      const text = await r.text().catch(() => "");
+      // Zwracamy kod i część odpowiedzi z zewnętrznego serwisu
+      console.error("LibreTranslate non-200:", r.status, text);
+      return res.status(502).json({
+        error: "External translation service error",
+        status: r.status,
+        detail: text
+      });
+    }
+
+    const data = await r.json().catch(() => null);
+    if (!data) {
+      return res.status(502).json({ error: "Empty or invalid JSON from LibreTranslate" });
+    }
+
+    // Zwracamy wynik dalej do frontu
     return res.status(200).json(data);
+
   } catch (err) {
-    return res.status(500).json({ error: "Błąd połączenia z LibreTranslate", details: err.message });
-   }
- }
+    console.error("Translate handler error:", err && err.message ? err.message : err);
+    return res.status(500).json({ error: "Server error in translate handler", details: String(err) });
+  }
+}
