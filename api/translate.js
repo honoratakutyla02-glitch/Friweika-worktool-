@@ -1,58 +1,25 @@
 // api/translate.js
-// Fallback proxy for translation: tries several public translate endpoints in order.
-// Exports a default handler for Vercel (ESM).
+// Uniwersalny testowy handler dla Vercel (ESM export default)
+// - Odpowiada na GET (test w przeglądarce)
+// - Odpowiada na POST (echo request.body) - tu potem wstawisz właściwą logikę
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Dozwolone tylko POST" });
-  }
-
-  const { q, source, target } = req.body || {};
-  if (!q || !source || !target) {
-    return res.status(400).json({ error: "Brak parametrów q/source/target" });
-  }
-
-  // Lista fallbacków — kolejność: preferowany pierwszy
-  const endpoints = [
-    { name: "libretranslate.de", url: "https://libretranslate.de/translate" },
-    { name: "argos", url: "https://translate.argosopentech.com/translate" },
-    { name: "astian", url: "https://translate.astian.org/translate" }
-  ];
-
-  // Helper: fetch with timeout using AbortController
-  async function fetchWithTimeout(url, options = {}, timeoutMs = 6000) {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const response = await fetch(url, { ...options, signal: controller.signal });
-      clearTimeout(id);
-      return response;
-    } catch (err) {
-      clearTimeout(id);
-      throw err;
+  try {
+    if (req.method === 'GET') {
+      // prosty test — otwórz w przeglądarce https://<twoja-domena>/api/translate
+      return res.status(200).json({ ok: true, message: 'API translate: GET ok' });
     }
+
+    if (req.method === 'POST') {
+      // echo (na potrzeby testu) - wyświetli to, co wyślesz z fetch()
+      const body = req.body || {};
+      return res.status(200).json({ ok: true, method: 'POST', body });
+    }
+
+    res.setHeader('Allow', 'GET, POST');
+    return res.status(405).json({ error: 'Method not allowed. Use GET or POST.' });
+  } catch (err) {
+    console.error('translate handler error', err);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-
-  // Body we send to remote
-  const bodyPayload = { q, source, target, format: "text" };
-
-  // Try endpoints sequentially
-  const errors = [];
-  for (const ep of endpoints) {
-    try {
-      console.log(`Trying translate endpoint: ${ep.name} -> ${ep.url}`);
-      const r = await fetchWithTimeout(ep.url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(bodyPayload)
-      }, 6000); // 6s timeout per endpoint
-
-      if (!r.ok) {
-        const txt = await r.text().catch(() => "");
-        const msg = `Endpoint ${ep.name} returned status ${r.status}: ${txt}`;
-        console.warn(msg);
-        errors.push({ endpoint: ep.name, status: r.status, detail: txt });
-        // try next endpoint
+}
