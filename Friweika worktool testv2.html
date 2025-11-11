@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Friweika WorkTool</title>
+<style>
+  :root { --yellow:#ffd84c; --red:#c92a2a; --bg:#fff9e6; --text:#3b2f2f; }
+  body{margin:0;font-family: "Segoe UI", Roboto, Arial, sans-serif;background:var(--bg);color:var(--text)}
+  header{background:linear-gradient(90deg,var(--red),#ff7043);color:#fff;text-align:center;padding:20px}
+  header h1{margin:0;font-size:24px}
+  .welcome{text-align:center;padding:30px 20px}
+  .welcome h2{color:var(--red)}
+  .start-btn{background:var(--yellow);border:none;padding:12px 22px;border-radius:10px;font-size:16px;font-weight:700;color:var(--red);cursor:pointer}
+  .container{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.15);padding:20px;display:none}
+  label{display:block;margin-top:10px;font-weight:700;color:var(--red)}
+  select,textarea,button{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-top:5px;font-size:15px}
+  textarea{resize:vertical;min-height:80px}
+  button.translate-btn{background:var(--red);color:#fff;border:none;font-weight:700;margin-top:10px;cursor:pointer}
+  footer{text-align:center;font-size:13px;color:#555;margin-top:40px;padding:10px}
+  .offline-message{display:none;text-align:center;background:#ffcccc;color:#700;padding:8px;border-radius:8px;margin-bottom:12px}
+  .help-row{display:flex;gap:10px;margin-top:8px}
+  .help-btn{flex:1;padding:8px;border-radius:8px;border:none;cursor:pointer}
+  .help-btn.secondary{background:#eee}
+  .note{font-size:13px;color:#666;margin-top:8px}
+  .small-muted{font-size:12px;color:#666;margin-top:6px}
+</style>
+</head>
+<body>
+
+<header><h1>Friweika WorkTool</h1></header>
+
+<div class="welcome" id="welcome">
+  <h2>Witaj w Friweika WorkTool!<br/>Willkommen bei Friweika WorkTool!</h2>
+  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie.<br/>Gib deinen Text ein, wähle eine Sprache und sieh die Übersetzung.</p>
+  <button class="start-btn" onclick="startApp()">Rozpocznij pracę / Arbeit beginnen</button>
+</div>
+
+<div class="container" id="translator">
+  <div class="offline-message" id="offlineMsg">Brak połączenia – tłumaczenie offline niedostępne.</div>
+
+  <label for="langFrom">Język źródłowy:</label>
+  <select id="langFrom">
+    <option value="pl">Polski</option>
+    <option value="de">Niemiecki</option>
+    <option value="en">Angielski</option>
+    <option value="uk">Ukraiński</option>
+    <option value="ar">Arabski</option>
+  </select>
+
+  <label for="langTo">Język docelowy:</label>
+  <select id="langTo">
+    <option value="de">Niemiecki</option>
+    <option value="pl">Polski</option>
+    <option value="en">Angielski</option>
+    <option value="uk">Ukraiński</option>
+    <option value="ar">Arabski</option>
+  </select>
+
+  <label for="sourceText">Tekst do tłumaczenia:</label>
+  <textarea id="sourceText" placeholder="Wpisz tutaj tekst..."></textarea>
+
+  <div class="help-row">
+    <button class="translate-btn" onclick="translateText()">Tłumacz</button>
+    <button class="help-btn secondary" onclick="openGoogleTranslate()">Otwórz Google Translate</button>
+  </div>
+
+  <label for="translatedText">Tłumaczenie:</label>
+  <textarea id="translatedText" readonly></textarea>
+
+  <div class="note">
+    Jeśli tłumaczenie online nie zadziała (publiczne serwisy mogą być czasem niedostępne lub blokować połączenia), użyj przycisku „Otwórz Google Translate”.
+  </div>
+  <div class="small-muted">Uwaga: mechanizm tłumaczenia działa 2-etapowo w tle: język źródłowy → angielski → język docelowy.</div>
+</div>
+
+<footer>Projekt wewnętrzny Friweika eG — wersja testowa</footer>
+
+<script>
+/* Tu endpoint ustawiamy na funkcję serwerową (proxy) - relative path */
+const PRIMARY_ENDPOINT = "/api/translate"; // <--- po wdrożeniu funkcji na Vercel to będzie działać
+
+function startApp(){
+  document.getElementById("welcome").style.display="none";
+  document.getElementById("translator").style.display="block";
+}
+
+async function translateText(){
+  const srcText = document.getElementById("sourceText").value.trim();
+  const langFrom = document.getElementById("langFrom").value;
+  const langTo = document.getElementById("langTo").value;
+  const output = document.getElementById("translatedText");
+  const offlineMsg = document.getElementById("offlineMsg");
+
+  if(!srcText){ alert("Wpisz tekst do tłumaczenia!"); return; }
+
+  if(!navigator.onLine){
+    offlineMsg.style.display="block";
+    output.value = "";
+    return;
+  } else {
+    offlineMsg.style.display="none";
+  }
+
+  output.value = "Tłumaczę...";
+
+  try {
+    // 1) wysyłamy do naszej funkcji proxy: najpierw na angielski
+    const r1 = await fetch(PRIMARY_ENDPOINT, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ q: srcText, source: langFrom, target: "en" })
+    });
+    if(!r1.ok) throw new Error("Endpoint 1 nie odpowiedział: " + r1.status);
+    const j1 = await r1.json();
+    const eng = j1.translatedText || "";
+
+    // 2) z angielskiego do języka docelowego
+    const r2 = await fetch(PRIMARY_ENDPOINT, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ q: eng, source: "en", target: langTo })
+    });
+    if(!r2.ok) throw new Error("Endpoint 2 nie odpowiedział: " + r2.status);
+    const j2 = await r2.json();
+    output.value = j2.translatedText || "[Brak rezultatu]";
+  } catch (err) {
+    console.warn("Tłumaczenie error:", err);
+    output.value = "Błąd połączenia z serwerem tłumaczenia.";
+  }
+}
+
+function openGoogleTranslate(){
+  const srcText = encodeURIComponent(document.getElementById("sourceText").value || "");
+  const langFrom = document.getElementById("langFrom").value;
+  const langTo = document.getElementById("langTo").value;
+  const googleMap = {pl:"pl", de:"de", en:"en", uk:"uk", ar:"ar"};
+  const from = googleMap[langFrom] || "auto";
+  const to = googleMap[langTo] || "en";
+  const url = "https://translate.google.com/?sl=" + from + "&tl=" + to + "&text=" + srcText + "&op=translate";
+  window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
