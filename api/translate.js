@@ -1,19 +1,26 @@
-// api/translate.js
-// (Vercel Serverless Function - Node.js, używa fetch dostępnego w środowisku)
-export default async function handler(request, response) {
-  if (request.method !== 'POST') {
-    response.status(405).json({ error: 'Only POST allowed' });
+// api/translate.js (CommonJS - prostsza wersja dla Vercel)
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    res.statusCode = 405;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ error: 'Only POST allowed' }));
     return;
   }
   try {
-    const body = await request.json();
+    // Odczyt ciała request (działa w tym środowisku)
+    const body = await new Promise((resolve) => {
+      let data = '';
+      req.on('data', chunk => data += chunk);
+      req.on('end', () => resolve(JSON.parse(data || '{}')));
+    });
+
     const q = body.q || '';
     const source = body.source || 'auto';
     const target = body.target || 'en';
 
-    // publiczna instancja LibreTranslate (możesz zmienić na inną instancję)
     const TRANSLATE_URL = 'https://libretranslate.de/translate';
 
+    // fetch powinien być dostępny w runtime Vercel; jeśli nie, powiemy jak dodać node-fetch
     const resp = await fetch(TRANSLATE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -21,16 +28,20 @@ export default async function handler(request, response) {
     });
 
     if (!resp.ok) {
-      const t = await resp.text();
-      response.status(502).json({ error: 'Bad gateway', details: t });
+      const text = await resp.text();
+      res.statusCode = 502;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: 'Bad gateway', details: text }));
       return;
     }
 
     const json = await resp.json();
-    // zwracamy bezpośrednio JSON z LibreTranslate
-    response.setHeader('Content-Type', 'application/json');
-    response.status(200).send(JSON.stringify(json));
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = 200;
+    res.end(JSON.stringify(json));
   } catch (err) {
-    response.status(500).json({ error: err.message });
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ error: err.message }));
   }
-}
+};
