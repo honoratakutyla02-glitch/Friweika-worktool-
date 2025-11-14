@@ -33,14 +33,14 @@
 
 <div class="welcome" id="welcome">
   <h2>Witaj w Friweika WorkTool!</h2>
-  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie (tekstowe).<br/>Prosty prototyp (wersja testowa).</p>
+  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie.<br/>Prototyp — wersja testowa.</p>
   <button class="start-btn" onclick="startApp()">Rozpocznij</button>
 </div>
 
 <div class="container" id="translator">
   <div class="offline-message" id="offlineMsg">Brak połączenia — tłumaczenie online niedostępne.</div>
 
-  <label for="langFrom">Język źródłowy (source):</label>
+  <label for="langFrom">Język źródłowy:</label>
   <select id="langFrom">
     <option value="pl">Polski</option>
     <option value="de">Niemiecki</option>
@@ -49,7 +49,7 @@
     <option value="ar">Arabski</option>
   </select>
 
-  <label for="langTo">Język docelowy (target):</label>
+  <label for="langTo">Język docelowy:</label>
   <select id="langTo">
     <option value="de">Niemiecki</option>
     <option value="pl">Polski</option>
@@ -63,7 +63,7 @@
 
   <div class="help-row">
     <button class="translate-btn" onclick="translateText()">Tłumacz</button>
-    <button class="secondary" onclick="openGoogleTranslate()">Otwórz Google Translate</button>
+    <button class="secondary" onclick="openGoogleTranslate()">Google Translate</button>
   </div>
 
   <div class="result-box">
@@ -71,32 +71,21 @@
     <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
     <div class="note" id="debugNote"></div>
   </div>
-
-  <div class="small-muted">
-    Uwaga: podczas testów aplikacja tłumaczy dwuetapowo: (język źródłowy → angielski → język docelowy).  
-    (To pomaga czasem uzyskać lepsze tłumaczenie pomiędzy mniej popularnymi parami językowymi.)
-  </div>
 </div>
 
-<footer style="text-align:center;padding:12px;font-size:13px;color:#666">Projekt wewnętrzny Friweika eG — wersja testowa</footer>
+<footer style="text-align:center;padding:12px;font-size:13px;color:#666">Projekt wewnętrzny Friweika — wersja testowa</footer>
 
 <script>
-/*
-  Ważne (prosto):
-  - proxy (pośrednik) = /api/translate  (to nasza funkcja na Vercel).
-  - Jeśli chcesz testować lokalnie bez proxy, użyj przycisku "Otwórz Google Translate".
-*/
-const PRIMARY_ENDPOINT = "/api/translate"; // (endpoint = adres naszej funkcji proxy)
+
+const PRIMARY_ENDPOINT = "/api/translate";
 
 function startApp(){
   document.getElementById("welcome").style.display = "none";
   document.getElementById("translator").style.display = "block";
 }
 
-/* Pomocniczne funkcje */
 function setDebug(text){
-  const el = document.getElementById("debugNote");
-  el.textContent = text || "";
+  document.getElementById("debugNote").textContent = text || "";
 }
 
 function showOffline(msg){
@@ -104,7 +93,6 @@ function showOffline(msg){
   if(msg) setDebug(msg);
 }
 
-/* Główna funkcja tłumacząca */
 async function translateText(){
   const srcText = document.getElementById("sourceText").value.trim();
   const langFrom = document.getElementById("langFrom").value;
@@ -112,71 +100,70 @@ async function translateText(){
   const output = document.getElementById("translatedText");
 
   if(!srcText){
-    alert("Wpisz tekst do tłumaczenia.");
+    alert("Wpisz tekst.");
     return;
   }
 
-  // Sprawdzenie, czy mamy internet
   if(!navigator.onLine){
-    showOffline("Brak połączenia sieciowego. Spróbuj później lub użyj Google Translate.");
+    showOffline("Brak internetu.");
     output.value = "";
     return;
   } else {
     showOffline("");
   }
 
-  output.value = "Tłumaczę...";
+  output.value = "Tłumaczę…";
   setDebug("");
 
   try {
-    // 1) najpierw na angielski (pośrednio)
+    // KROK 1: z dowolnego języka → angielski
     const r1 = await fetch(PRIMARY_ENDPOINT, {
-      method: "POST", // (POST = sposób wysyłania danych, tu wymagany)
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q: srcText, source: langFrom, target: "en" })
+      body: JSON.stringify({ 
+        q: srcText, 
+        source: langFrom, 
+        target: "en" 
+      })
     });
 
-    if(!r1.ok){
-      // Spróbuj odczytać treść odpowiedzi (jeśli jest)
-      const t = await r1.text();
-      throw new Error("Błąd endpointu (krok 1): " + r1.status + " — " + t);
-    }
     const j1 = await r1.json();
-    const eng = j1.translatedText || "";
+    if(!r1.ok) throw new Error(JSON.stringify(j1));
 
-    // 2) z angielskiego do docelowego
+    const eng = j1.translation || "";
+
+    // KROK 2: angielski → docelowy
     const r2 = await fetch(PRIMARY_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q: eng, source: "en", target: langTo })
+      body: JSON.stringify({ 
+        q: eng, 
+        source: "en", 
+        target: langTo 
+      })
     });
 
-    if(!r2.ok){
-      const t2 = await r2.text();
-      throw new Error("Błąd endpointu (krok 2): " + r2.status + " — " + t2);
-    }
     const j2 = await r2.json();
-    output.value = j2.translatedText || "[Brak rezultatu]";
+    if(!r2.ok) throw new Error(JSON.stringify(j2));
+
+    output.value = j2.translation || "[Brak wyniku]";
 
   } catch (err) {
-    console.warn("Tłumaczenie error:", err);
-    output.value = "Błąd połączenia z serwerem tłumaczenia.";
-    setDebug("Szczegóły: " + (err.message || err));
+    output.value = "Błąd tłumaczenia.";
+    setDebug(err.message || err);
   }
 }
 
-/* Fallback: otwórz Google Translate (szybko, gdy proxy niedostępne) */
 function openGoogleTranslate(){
-  const srcText = encodeURIComponent(document.getElementById("sourceText").value || "");
-  const langFrom = document.getElementById("langFrom").value;
-  const langTo = document.getElementById("langTo").value;
-  const googleMap = {pl:"pl", de:"de", en:"en", uk:"uk", ar:"ar"};
-  const from = googleMap[langFrom] || "auto";
-  const to = googleMap[langTo] || "en";
-  const url = "https://translate.google.com/?sl=" + from + "&tl=" + to + "&text=" + srcText + "&op=translate";
+  const text = encodeURIComponent(document.getElementById("sourceText").value || "");
+  const from = document.getElementById("langFrom").value;
+  const to = document.getElementById("langTo").value;
+  const url = `https://translate.google.com/?sl=${from}&tl=${to}&text=${text}&op=translate`;
   window.open(url, "_blank");
 }
+
 </script>
 
 </body>
 </html>
+
