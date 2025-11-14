@@ -7,7 +7,6 @@ const client = new OpenAI({
 
 export default async function handler(req, res) {
   try {
-    // Ręczne parsowanie JSON dla serverless
     let body = {};
     if (req.method === "POST") {
       const raw = await new Promise((resolve) => {
@@ -23,22 +22,26 @@ export default async function handler(req, res) {
       }
     }
 
-    // GET testowy
     if (req.method === "GET") {
       return res.status(200).json({ ok: true, message: "GET OK" });
     }
 
-    // POST — właściwe tłumaczenie
     if (req.method === "POST") {
-      const { q, source, target } = body;
+
+      // 🔥 TU PRZYJMUJEMY WSZYSTKIE MOŻLIWE NAZWY Z FRONTENDU
+      const q = body.q || body.text || body.textToTranslate || body.input || "";
+      const source = body.source || body.sourceLang || body.from || "";
+      const target = body.target || body.targetLang || body.to || "";
 
       if (!q || !source || !target) {
-        return res.status(400).json({ error: "Missing q/source/target" });
+        return res.status(400).json({
+          error: "Missing q/source/target",
+          received: body
+        });
       }
 
       const prompt = `Translate this text from ${source} to ${target}: "${q}"`;
 
-      // POPRAWNE wywołanie API OpenAI
       const result = await client.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -60,7 +63,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("SERVER ERROR:", err);
-    
+
     return res.status(500).json({
       error: "Server error",
       details: err.message,
