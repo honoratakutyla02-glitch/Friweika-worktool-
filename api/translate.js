@@ -7,7 +7,7 @@ const client = new OpenAI({
 
 export default async function handler(req, res) {
   try {
-    // --- PARSOWANIE JSON RĘCZNIE ---
+    // Ręczne parsowanie JSON dla serverless
     let body = {};
     if (req.method === "POST") {
       const raw = await new Promise((resolve) => {
@@ -18,27 +18,28 @@ export default async function handler(req, res) {
 
       try {
         body = JSON.parse(raw || "{}");
-      } catch (e) {
-        return res.status(400).json({ error: "Invalid JSON body" });
+      } catch (err) {
+        return res.status(400).json({ error: "Invalid JSON" });
       }
     }
 
-    // --- OBSŁUGA GET ---
-    if (req.method === 'GET') {
-      return res.status(200).json({ ok: true, message: "Translate API works (GET)" });
+    // GET testowy
+    if (req.method === "GET") {
+      return res.status(200).json({ ok: true, message: "GET OK" });
     }
 
-    // --- OBSŁUGA POST ---
+    // POST — właściwe tłumaczenie
     if (req.method === "POST") {
       const { q, source, target } = body;
 
       if (!q || !source || !target) {
-        return res.status(400).json({ error: "Missing parameters q/source/target" });
+        return res.status(400).json({ error: "Missing q/source/target" });
       }
 
       const prompt = `Translate this text from ${source} to ${target}: "${q}"`;
 
-      const response = await client.chat.completions.create({
+      // POPRAWNE wywołanie API OpenAI
+      const result = await client.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a translation assistant." },
@@ -46,7 +47,7 @@ export default async function handler(req, res) {
         ]
       });
 
-      const translation = response.choices[0].message.content.trim();
+      const translation = result.choices[0].message.content;
 
       return res.status(200).json({
         ok: true,
@@ -54,15 +55,15 @@ export default async function handler(req, res) {
       });
     }
 
-    // jeśli inna metoda
     res.setHeader("Allow", ["GET", "POST"]);
     return res.status(405).json({ error: "Method not allowed" });
 
   } catch (err) {
-    console.error("API ERROR:", err);
+    console.error("SERVER ERROR:", err);
+    
     return res.status(500).json({
       error: "Server error",
-      details: err.message
+      details: err.message,
     });
   }
 }
