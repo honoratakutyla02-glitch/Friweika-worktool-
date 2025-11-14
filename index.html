@@ -71,27 +71,23 @@
     <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
     <div class="note" id="debugNote"></div>
   </div>
+
+  <div class="small-muted">
+    Uwaga: podczas testów aplikacja tłumaczy dwuetapowo (źródłowy → angielski → docelowy).
+  </div>
 </div>
 
 <footer style="text-align:center;padding:12px;font-size:13px;color:#666">Projekt wewnętrzny Friweika — wersja testowa</footer>
 
 <script>
-
 const PRIMARY_ENDPOINT = "/api/translate";
 
 function startApp(){
   document.getElementById("welcome").style.display = "none";
   document.getElementById("translator").style.display = "block";
 }
-
-function setDebug(text){
-  document.getElementById("debugNote").textContent = text || "";
-}
-
-function showOffline(msg){
-  document.getElementById("offlineMsg").style.display = msg ? "block" : "none";
-  if(msg) setDebug(msg);
-}
+function setDebug(text){ document.getElementById("debugNote").textContent = text || ""; }
+function showOffline(msg){ document.getElementById("offlineMsg").style.display = msg ? "block" : "none"; if(msg) setDebug(msg); }
 
 async function translateText(){
   const srcText = document.getElementById("sourceText").value.trim();
@@ -99,58 +95,37 @@ async function translateText(){
   const langTo = document.getElementById("langTo").value;
   const output = document.getElementById("translatedText");
 
-  if(!srcText){
-    alert("Wpisz tekst.");
-    return;
-  }
-
-  if(!navigator.onLine){
-    showOffline("Brak internetu.");
-    output.value = "";
-    return;
-  } else {
-    showOffline("");
-  }
+  if(!srcText){ alert("Wpisz tekst."); return; }
+  if(!navigator.onLine){ showOffline("Brak internetu."); output.value=""; return; } else showOffline("");
 
   output.value = "Tłumaczę…";
   setDebug("");
 
   try {
-    // KROK 1: z dowolnego języka → angielski
+    // Krok 1: do angielskiego
     const r1 = await fetch(PRIMARY_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        q: srcText, 
-        source: langFrom, 
-        target: "en" 
-      })
+      body: JSON.stringify({ text: srcText, sourceLang: langFrom, targetLang: "en" })
     });
-
     const j1 = await r1.json();
     if(!r1.ok) throw new Error(JSON.stringify(j1));
-
     const eng = j1.translation || "";
+    if(!eng){ throw new Error("Brak tłumaczenia (krok 1)"); }
 
-    // KROK 2: angielski → docelowy
+    // Krok 2: do języka docelowego
     const r2 = await fetch(PRIMARY_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        q: eng, 
-        source: "en", 
-        target: langTo 
-      })
+      body: JSON.stringify({ text: eng, sourceLang: "en", targetLang: langTo })
     });
-
     const j2 = await r2.json();
     if(!r2.ok) throw new Error(JSON.stringify(j2));
-
     output.value = j2.translation || "[Brak wyniku]";
 
   } catch (err) {
     output.value = "Błąd tłumaczenia.";
-    setDebug(err.message || err);
+    setDebug(String(err));
   }
 }
 
@@ -161,9 +136,7 @@ function openGoogleTranslate(){
   const url = `https://translate.google.com/?sl=${from}&tl=${to}&text=${text}&op=translate`;
   window.open(url, "_blank");
 }
-
 </script>
 
 </body>
 </html>
-
