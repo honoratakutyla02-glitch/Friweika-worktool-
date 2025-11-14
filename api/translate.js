@@ -8,6 +8,7 @@ const client = new OpenAI({
 export default async function handler(req, res) {
   try {
     let body = {};
+
     if (req.method === "POST") {
       const raw = await new Promise((resolve) => {
         let data = "";
@@ -28,16 +29,13 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
 
-      // 🔥 TU PRZYJMUJEMY WSZYSTKIE MOŻLIWE NAZWY Z FRONTENDU
-      const q = body.q || body.text || body.textToTranslate || body.input || "";
-      const source = body.source || body.sourceLang || body.from || "";
-      const target = body.target || body.targetLang || body.to || "";
+      // Obsługa obu formatów JSON
+      const q = body.q || body.text;
+      const source = body.source || body.sourceLang;
+      const target = body.target || body.targetLang;
 
       if (!q || !source || !target) {
-        return res.status(400).json({
-          error: "Missing q/source/target",
-          received: body
-        });
+        return res.status(400).json({ error: "Missing q/source/target" });
       }
 
       const prompt = `Translate this text from ${source} to ${target}: "${q}"`;
@@ -63,10 +61,11 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("SERVER ERROR:", err);
-
+    
     return res.status(500).json({
       error: "Server error",
       details: err.message,
     });
   }
 }
+
