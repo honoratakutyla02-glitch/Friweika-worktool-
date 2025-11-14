@@ -33,14 +33,14 @@
 
 <div class="welcome" id="welcome">
   <h2>Witaj w Friweika WorkTool!</h2>
-  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie.<br/>Prototyp — wersja testowa.</p>
+  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie (tekstowe).<br/>Prosty prototyp (wersja testowa).</p>
   <button class="start-btn" onclick="startApp()">Rozpocznij</button>
 </div>
 
 <div class="container" id="translator">
   <div class="offline-message" id="offlineMsg">Brak połączenia — tłumaczenie online niedostępne.</div>
 
-  <label for="langFrom">Język źródłowy:</label>
+  <label for="langFrom">Język źródłowy (source):</label>
   <select id="langFrom">
     <option value="pl">Polski</option>
     <option value="de">Niemiecki</option>
@@ -49,7 +49,7 @@
     <option value="ar">Arabski</option>
   </select>
 
-  <label for="langTo">Język docelowy:</label>
+  <label for="langTo">Język docelowy (target):</label>
   <select id="langTo">
     <option value="de">Niemiecki</option>
     <option value="pl">Polski</option>
@@ -73,11 +73,13 @@
   </div>
 
   <div class="small-muted">
-    Uwaga: podczas testów aplikacja tłumaczy dwuetapowo (źródłowy → angielski → docelowy).
+    Uwaga: podczas testów aplikacja tłumaczy dwuetapowo: (język źródłowy → angielski → język docelowy).
   </div>
 </div>
 
-<footer style="text-align:center;padding:12px;font-size:13px;color:#666">Projekt wewnętrzny Friweika — wersja testowa</footer>
+<footer style="text-align:center;padding:12px;font-size:13px;color:#666">
+  Projekt wewnętrzny Friweika eG — wersja testowa
+</footer>
 
 <script>
 const PRIMARY_ENDPOINT = "/api/translate";
@@ -86,8 +88,15 @@ function startApp(){
   document.getElementById("welcome").style.display = "none";
   document.getElementById("translator").style.display = "block";
 }
-function setDebug(text){ document.getElementById("debugNote").textContent = text || ""; }
-function showOffline(msg){ document.getElementById("offlineMsg").style.display = msg ? "block" : "none"; if(msg) setDebug(msg); }
+
+function setDebug(text){
+  document.getElementById("debugNote").textContent = text || "";
+}
+
+function showOffline(msg){
+  document.getElementById("offlineMsg").style.display = msg ? "block" : "none";
+  if(msg) setDebug(msg);
+}
 
 async function translateText(){
   const srcText = document.getElementById("sourceText").value.trim();
@@ -95,48 +104,70 @@ async function translateText(){
   const langTo = document.getElementById("langTo").value;
   const output = document.getElementById("translatedText");
 
-  if(!srcText){ alert("Wpisz tekst."); return; }
-  if(!navigator.onLine){ showOffline("Brak internetu."); output.value=""; return; } else showOffline("");
+  if(!srcText){
+    alert("Wpisz tekst do tłumaczenia.");
+    return;
+  }
 
-  output.value = "Tłumaczę…";
+  if(!navigator.onLine){
+    showOffline("Brak połączenia sieciowego.");
+    output.value = "";
+    return;
+  } else showOffline("");
+
+  output.value = "Tłumaczę...";
   setDebug("");
 
   try {
-    // Krok 1: do angielskiego
+    // 1. Tłumaczenie na angielski
     const r1 = await fetch(PRIMARY_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: srcText, sourceLang: langFrom, targetLang: "en" })
+      body: JSON.stringify({ q: srcText, source: langFrom, target: "en" })
     });
-    const j1 = await r1.json();
-    if(!r1.ok) throw new Error(JSON.stringify(j1));
-    const eng = j1.translation || "";
-    if(!eng){ throw new Error("Brak tłumaczenia (krok 1)"); }
 
-    // Krok 2: do języka docelowego
+    if (!r1.ok){
+      const t = await r1.text();
+      throw new Error("Błąd endpointu (krok 1): " + r1.status + " — " + t);
+    }
+
+    const j1 = await r1.json();
+    const eng = j1.translation || "";   // <-- poprawione
+
+    // 2. Angielski → język docelowy
     const r2 = await fetch(PRIMARY_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: eng, sourceLang: "en", targetLang: langTo })
+      body: JSON.stringify({ q: eng, source: "en", target: langTo })
     });
+
+    if (!r2.ok){
+      const t2 = await r2.text();
+      throw new Error("Błąd endpointu (krok 2): " + r2.status + " — " + t2);
+    }
+
     const j2 = await r2.json();
-    if(!r2.ok) throw new Error(JSON.stringify(j2));
-    output.value = j2.translation || "[Brak wyniku]";
+    output.value = j2.translation || "[Brak rezultatu]";  // <-- poprawione
 
   } catch (err) {
+    console.warn("Tłumaczenie error:", err);
     output.value = "Błąd tłumaczenia.";
-    setDebug(String(err));
+    setDebug(err.message || err);
   }
 }
 
 function openGoogleTranslate(){
-  const text = encodeURIComponent(document.getElementById("sourceText").value || "");
-  const from = document.getElementById("langFrom").value;
-  const to = document.getElementById("langTo").value;
-  const url = `https://translate.google.com/?sl=${from}&tl=${to}&text=${text}&op=translate`;
+  const srcText = encodeURIComponent(document.getElementById("sourceText").value || "");
+  const langFrom = document.getElementById("langFrom").value;
+  const langTo = document.getElementById("langTo").value;
+  const googleMap = {pl:"pl", de:"de", en:"en", uk:"uk", ar:"ar"};
+  const from = googleMap[langFrom] || "auto";
+  const to = googleMap[langTo] || "en";
+  const url = "https://translate.google.com/?sl=" + from + "&tl=" + to + "&text=" + srcText + "&op=translate";
   window.open(url, "_blank");
 }
 </script>
 
 </body>
 </html>
+
