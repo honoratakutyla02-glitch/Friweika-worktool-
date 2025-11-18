@@ -1,88 +1,52 @@
 // api/translate.js
-import OpenAI from "openai";
+import OpenAI from 'openai';
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export default async function handler(req, res) {
-  try {
-    let body = {};
+export default async function handler(req, res){
+  try{
+    if(req.method === 'GET') return res.status(200).json({ ok:true, message:'Translate API works (GET)' });
 
-    // Parsowanie body (Vercel serverless)
-    if (req.method === "POST") {
-      const raw = await new Promise(resolve => {
-        let data = "";
-        req.on("data", chunk => data += chunk);
-        req.on("end", () => resolve(data));
-      });
-
-      try {
-        body = JSON.parse(raw || "{}");
-      } catch (err) {
-        return res.status(400).json({ error: "Invalid JSON body" });
-      }
+    if(req.method !== 'POST'){
+      res.setHeader('Allow',['GET','POST']);
+      return res.status(405).json({ error:'Method not allowed' });
     }
 
-    // GET testowy
-    if (req.method === "GET") {
-      return res.status(200).json({
-        ok: true,
-        message: "Translate API works (GET OK)"
-      });
+    // parse body safely
+    let body = req.body;
+    if(!body){
+      const raw = await new Promise(r=>{let d=''; req.on('data',c=>d+=c); req.on('end',()=>r(d));});
+      try{ body = JSON.parse(raw||'{}'); }catch(e){ return res.status(400).json({ error:'Invalid JSON' }); }
     }
 
-    // POST – tłumaczenie
-    if (req.method === "POST") {
-      const q = body.q;
-      const source = body.source;
-      const target = body.target;
+    // support both q or text keys
+    const q = body.q || body.text;
+    const source = body.source || body.sourceLang;
+    const target = body.target || body.targetLang;
 
-      if (!q || !source || !target) {
-        return res.status(400).json({
-          error: "Missing parameters q/source/target"
-        });
-      }
+    if(!q || !source || !target) return res.status(400).json({ error:'Missing q/source/target' });
 
-      // 📌 NOWY PROMPT – BEZ CUDZYSŁOWÓW
-      const prompt = `
-You are a translation engine.
-Translate the following text from ${source} to ${target}.
-Return ONLY the translated text. No quotes, no explanations.
+    // Compose prompt for clean output (no extra quotes)
+    const prompt = `Translate the following text from ${source} to ${target}. Respond ONLY with the translation and no extra commentary:\n\n${q}`;
 
-Text:
-${q}
-`;
-
-      const response = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You translate text only. No explanations. Output must be translation only." },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.0
-      });
-
-      let translation = response.choices[0].message.content || "";
-
-      // 📌 USUWANIE CUDZYSŁOWÓW Z ODPOWIEDZI
-      translation = translation.trim().replace(/^"+|"+$/g, "").replace(/^'+|'+$/g, "");
-
-      return res.status(200).json({
-        ok: true,
-        translation
-      });
-    }
-
-    res.setHeader("Allow", ["GET", "POST"]);
-    return res.status(405).json({ error: "Method not allowed" });
-
-  } catch (err) {
-    console.error("SERVER ERROR:", err);
-    
-    return res.status(500).json({
-      error: "Server error",
-      details: err.message
+    // Use chat completions to get natural translation
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: 'You are a precise translation assistant. Return only the translation text, do not add quotes or commentary.' },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 1000
     });
+
+    const translation = completion.choices?.[0]?.message?.content || '';
+
+    return res.status(200).json({ ok:true, translation });
+
+  }catch(err){
+    console.error('API ERROR:', err);
+    // forward meaningful message but avoid leaking internal stack
+    const msg = err?.message || String(err);
+    return res.status(500).json({ error:'Server error', details: msg });
   }
 }
