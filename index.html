@@ -1,3 +1,4 @@
+<!-- Friweika WorkTool Prototype: With history + contacts + improved UI -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -6,40 +7,45 @@
 <title>Friweika WorkTool</title>
 <style>
   :root { --yellow:#ffd84c; --red:#c92a2a; --bg:#fff9e6; --text:#3b2f2f; }
-  *{box-sizing:border-box}
-  body{margin:0;font-family: "Segoe UI", Roboto, Arial, sans-serif;background:var(--bg);color:var(--text)}
-  header{background:linear-gradient(90deg,var(--red),#ff7043);color:#fff;text-align:center;padding:18px}
-  header h1{margin:0;font-size:22px}
-  .welcome{text-align:center;padding:26px 18px}
-  .welcome h2{color:var(--red);margin:0 0 10px}
-  .start-btn{background:var(--yellow);border:none;padding:10px 18px;border-radius:10px;font-size:15px;font-weight:700;color:var(--red);cursor:pointer}
-  .container{max-width:760px;margin:18px auto;background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.12);padding:18px;display:none}
-  label{display:block;margin-top:10px;font-weight:700;color:var(--red)}
-  select,textarea,button,input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-top:5px;font-size:15px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family: "Segoe UI", Roboto, Arial, sans-serif;background:var(--bg);color:var(--text);}
+  header{background:linear-gradient(90deg,var(--red),#ff7043);color:#fff;text-align:center;padding:14px;font-size:20px;font-weight:700}
+
+  /* bottom navigation */
+  .nav{position:fixed;bottom:0;left:0;width:100%;background:#fff;border-top:2px solid #ddd;display:flex;justify-content:space-around;padding:8px 0;z-index:20}
+  .nav button{background:none;border:none;font-size:14px;color:#444;flex:1;cursor:pointer;padding:6px 0}
+  .nav button.active{color:var(--red);font-weight:700}
+
+  /* pages */
+  .page{display:none;padding:16px 12px 70px 12px;max-width:760px;margin:auto}
+  .page.active{display:block}
+
+  label{display:block;margin-top:12px;font-weight:700;color:var(--red)}
+  select,textarea,input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-top:5px;font-size:15px}
   textarea{resize:vertical;min-height:100px}
-  .help-row{display:flex;gap:10px;margin-top:12px}
-  .help-row button{flex:1}
-  .translate-btn{background:var(--red);color:#fff;border:none;font-weight:700;cursor:pointer;padding:12px;border-radius:8px}
-  .secondary{background:#eee;border:none;cursor:pointer;border-radius:8px;padding:10px}
-  .offline-message{display:none;text-align:center;background:#ffefef;color:#700;padding:8px;border-radius:8px;margin-bottom:12px}
-  .note{font-size:13px;color:#666;margin-top:10px}
-  .small-muted{font-size:12px;color:#666;margin-top:6px}
-  .result-box{margin-top:12px}
+  .btn{background:var(--red);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;margin-top:12px;cursor:pointer;width:100%}
+  .btn-secondary{background:#eee;color:#333;border:none;padding:10px;margin-top:10px;border-radius:8px;cursor:pointer;width:100%}
+
+  .history-item{background:#fff;padding:12px;border-radius:8px;margin-top:10px;border:1px solid #ddd;cursor:pointer}
+  .history-item p{font-size:14px;margin-bottom:4px}
+
+  .contact-box{background:#fff;padding:14px;border-radius:10px;margin-top:12px;border:1px solid #ddd}
+  .contact-box h3{margin-bottom:6px;color:var(--red)}
+  .contact-box a{display:inline-block;margin-top:6px;font-weight:700;color:#0073ff;text-decoration:none}
 </style>
 </head>
 <body>
+<header>Friweika WorkTool</header>
 
-<header><h1>Friweika WorkTool</h1></header>
-
-<div class="welcome" id="welcome">
-  <h2>Witaj w Friweika WorkTool!</h2>
-  <p>Wpisz tekst, wybierz język i poznaj tłumaczenie (tekstowe).<br/>Prosty prototyp (wersja testowa).</p>
-  <button class="start-btn" onclick="startApp()">Rozpocznij</button>
+<!-- NAVIGATION -->
+<div class="nav">
+  <button id="tab-translate" class="active" onclick="switchTab('translate')">Tłumacz</button>
+  <button id="tab-history" onclick="switchTab('history')">Historia</button>
+  <button id="tab-contacts" onclick="switchTab('contacts')">Kontakty</button>
 </div>
 
-<div class="container" id="translator">
-  <div class="offline-message" id="offlineMsg">Brak połączenia — tłumaczenie online niedostępne.</div>
-
+<!-- PAGE: TRANSLATOR -->
+<div id="translate" class="page active">
   <label for="langFrom">Język źródłowy (source):</label>
   <select id="langFrom">
     <option value="pl">Polski</option>
@@ -61,110 +67,144 @@
   <label for="sourceText">Tekst do tłumaczenia:</label>
   <textarea id="sourceText" placeholder="Wpisz tutaj tekst..."></textarea>
 
-  <div class="help-row">
-    <button class="translate-btn" onclick="translateText()">Tłumacz</button>
-    <button class="secondary" onclick="openGoogleTranslate()">Google Translate</button>
+  <button class="btn" onclick="translateText()">Tłumacz</button>
+  <button class="btn-secondary" onclick="openGoogleTranslate()">Otwórz Google Translate</button>
+
+  <label for="translatedText" style="margin-top:16px">Tłumaczenie:</label>
+  <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
+
+  <p id="debugNote" style="margin-top:6px;font-size:13px;color:#666"></p>
+</div>
+
+<!-- PAGE: HISTORY -->
+<div id="history" class="page">
+  <h2 style="color:var(--red);margin-bottom:10px">Historia tłumaczeń</h2>
+  <div id="historyList"></div>
+  <button class="btn-secondary" onclick="clearHistory()">Wyczyść historię</button>
+</div>
+
+<!-- PAGE: CONTACTS -->
+<div id="contacts" class="page">
+  <h2 style="color:var(--red);margin-bottom:10px">Kontakty firmowe</h2>
+
+  <div class="contact-box">
+    <h3>Kierownik zmiany A</h3>
+    <p>Numer: 111 111 111</p>
+    <a href="tel:111111111">Zadzwoń</a>
   </div>
 
-  <div class="result-box">
-    <label for="translatedText">Tłumaczenie:</label>
-    <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
-    <div class="note" id="debugNote"></div>
+  <div class="contact-box">
+    <h3>Kierownik zmiany B</h3>
+    <p>Numer: 222 222 222</p>
+    <a href="tel:222222222">Zadzwoń</a>
   </div>
 
-  <div class="small-muted">
-    Uwaga: podczas testów aplikacja tłumaczy dwuetapowo: (język źródłowy → angielski → język docelowy).
+  <div class="contact-box">
+    <h3>Biuro / Szef produkcji</h3>
+    <p>Numer: 333 333 333</p>
+    <a href="tel:333333333">Zadzwoń</a>
   </div>
 </div>
 
-<footer style="text-align:center;padding:12px;font-size:13px;color:#666">
-  Projekt wewnętrzny Friweika eG — wersja testowa
-</footer>
-
 <script>
+/* ------------------- NAVIGATION ------------------- */
+function switchTab(tab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab === 'history') loadHistory();
+}
+
+/* ------------------- TRANSLATION ------------------- */
 const PRIMARY_ENDPOINT = "/api/translate";
 
-function startApp(){
-  document.getElementById("welcome").style.display = "none";
-  document.getElementById("translator").style.display = "block";
-}
-
-function setDebug(text){
-  document.getElementById("debugNote").textContent = text || "";
-}
-
-function showOffline(msg){
-  document.getElementById("offlineMsg").style.display = msg ? "block" : "none";
-  if(msg) setDebug(msg);
-}
+function setDebug(t){ document.getElementById('debugNote').textContent = t || ""; }
 
 async function translateText(){
-  const srcText = document.getElementById("sourceText").value.trim();
-  const langFrom = document.getElementById("langFrom").value;
-  const langTo = document.getElementById("langTo").value;
-  const output = document.getElementById("translatedText");
+  const src = document.getElementById('sourceText').value.trim();
+  const from = document.getElementById('langFrom').value;
+  const to = document.getElementById('langTo').value;
+  const output = document.getElementById('translatedText');
 
-  if(!srcText){
-    alert("Wpisz tekst do tłumaczenia.");
-    return;
-  }
-
-  if(!navigator.onLine){
-    showOffline("Brak połączenia sieciowego.");
-    output.value = "";
-    return;
-  } else showOffline("");
+  if(!src){ alert("Wpisz tekst."); return; }
 
   output.value = "Tłumaczę...";
   setDebug("");
 
-  try {
-    // 1. Tłumaczenie na angielski
-    const r1 = await fetch(PRIMARY_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q: srcText, source: langFrom, target: "en" })
+  try{
+    const r1 = await fetch(PRIMARY_ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({q:src, source:from, target:"en"})
     });
-
-    if (!r1.ok){
-      const t = await r1.text();
-      throw new Error("Błąd endpointu (krok 1): " + r1.status + " — " + t);
-    }
 
     const j1 = await r1.json();
-    const eng = j1.translation || "";   // <-- poprawione
+    const eng = j1.translation || "";
 
-    // 2. Angielski → język docelowy
-    const r2 = await fetch(PRIMARY_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q: eng, source: "en", target: langTo })
+    const r2 = await fetch(PRIMARY_ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({q:eng, source:"en", target:to})
     });
 
-    if (!r2.ok){
-      const t2 = await r2.text();
-      throw new Error("Błąd endpointu (krok 2): " + r2.status + " — " + t2);
-    }
-
     const j2 = await r2.json();
-    output.value = j2.translation || "[Brak rezultatu]";  // <-- poprawione
+    const final = j2.translation || "[Brak rezultatu]";
 
-  } catch (err) {
-    console.warn("Tłumaczenie error:", err);
-    output.value = "Błąd tłumaczenia.";
-    setDebug(err.message || err);
+    output.value = final;
+    saveHistory(src, final, from, to);
+
+  } catch(e){
+    output.value = "Błąd połączenia z serwerem.";
+    setDebug(e.message || e);
   }
 }
 
 function openGoogleTranslate(){
-  const srcText = encodeURIComponent(document.getElementById("sourceText").value || "");
-  const langFrom = document.getElementById("langFrom").value;
-  const langTo = document.getElementById("langTo").value;
-  const googleMap = {pl:"pl", de:"de", en:"en", uk:"uk", ar:"ar"};
-  const from = googleMap[langFrom] || "auto";
-  const to = googleMap[langTo] || "en";
-  const url = "https://translate.google.com/?sl=" + from + "&tl=" + to + "&text=" + srcText + "&op=translate";
+  const src = encodeURIComponent(document.getElementById('sourceText').value || "");
+  const from = document.getElementById('langFrom').value;
+  const to = document.getElementById('langTo').value;
+
+  const url = `https://translate.google.com/?sl=${from}&tl=${to}&text=${src}&op=translate`;
   window.open(url, "_blank");
+}
+
+/* ------------------- HISTORY ------------------- */
+function saveHistory(src, result, from, to){
+  const entry = {src, result, from, to, time:Date.now()};
+  const history = JSON.parse(localStorage.getItem('fw_history') || '[]');
+  history.unshift(entry);
+  localStorage.setItem('fw_history', JSON.stringify(history));
+}
+
+function loadHistory(){
+  const box = document.getElementById('historyList');
+  box.innerHTML = "";
+  const history = JSON.parse(localStorage.getItem('fw_history') || '[]');
+
+  if(history.length === 0){
+    box.innerHTML = '<p style="margin-top:10px;color:#666">Brak historii.</p>';
+    return;
+  }
+
+  history.forEach(item=>{
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    div.innerHTML = `<p><b>${item.from} → ${item.to}</b></p><p>${item.src}</p><p style="color:var(--red)">${item.result}</p>`;
+    div.onclick = ()=>{
+      document.getElementById('sourceText').value = item.src;
+      document.getElementById('translatedText').value = item.result;
+      document.getElementById('langFrom').value = item.from;
+      document.getElementById('langTo').value = item.to;
+      switchTab('translate');
+    };
+    box.appendChild(div);
+  });
+}
+
+function clearHistory(){
+  localStorage.removeItem('fw_history');
+  loadHistory();
 }
 </script>
 
