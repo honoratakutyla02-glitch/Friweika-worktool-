@@ -1,18 +1,17 @@
 // api/translate.js
 import OpenAI from "openai";
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 export default async function handler(req, res) {
   try {
-    // CORS (jeśli testy z innej domeny) — możesz zostawić
-    // res.setHeader('Access-Control-Allow-Origin', '*');
-    // res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    // res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
     let body = {};
+
+    // Ręczne parsowanie JSON (wymagane w Vercel serverless)
     if (req.method === "POST") {
-      const raw = await new Promise((resolve) => {
+      const raw = await new Promise(resolve => {
         let data = "";
         req.on("data", chunk => data += chunk);
         req.on("end", () => resolve(data));
@@ -21,47 +20,71 @@ export default async function handler(req, res) {
       try {
         body = JSON.parse(raw || "{}");
       } catch (err) {
-        return res.status(400).json({ error: "Invalid JSON" });
+        return res.status(400).json({ error: "Invalid JSON body" });
       }
     }
 
+    // GET testowy
     if (req.method === "GET") {
-      return res.status(200).json({ ok: true, message: "Translate API works (GET)" });
+      return res.status(200).json({
+        ok: true,
+        message: "Translate API works (GET OK)"
+      });
     }
 
+    // POST – tłumaczenie
     if (req.method === "POST") {
-      // przyjmujemy oba formaty nazw pól
-      const q = body.q || body.text;
-      const source = body.source || body.sourceLang;
-      const target = body.target || body.targetLang;
+      const q = body.q;
+      const source = body.source;
+      const target = body.target;
 
       if (!q || !source || !target) {
-        return res.status(400).json({ error: "Missing q/source/target" });
+        return res.status(400).json({
+          error: "Missing parameters q/source/target"
+        });
       }
 
-      const prompt = `Translate this text from ${source} to ${target}: """${q}"""`;
+      // Bardzo ważne — wymuszamy czyste tłumaczenie BEZ komentarzy
+      const prompt = `
+You are a translation engine. 
+Translate the following text from ${source} to ${target}.
+Return ONLY the translated text. 
+Do NOT add anything else (no notes, no explanations, no comments, no metadata).
 
-      // Wywołanie OpenAI
-      const result = await client.chat.completions.create({
+Text:
+"${q}"
+`;
+
+      const response = await client.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "You are a helpful and precise translation assistant." },
+          { role: "system", content: "You translate text only. No explanations. Output must be translation only." },
           { role: "user", content: prompt }
         ],
-        max_tokens: 2000
+        temperature: 0.0
       });
 
-      const translation = (result?.choices?.[0]?.message?.content || "").trim();
+      let translation = response.choices[0].message.content || "";
 
-      return res.status(200).json({ ok: true, translation });
+      // Na wszelki wypadek — usuwamy nowe linie i nadwyżki spacji
+      translation = translation.trim();
+
+      return res.status(200).json({
+        ok: true,
+        translation
+      });
     }
 
+    // Błędna metoda
     res.setHeader("Allow", ["GET", "POST"]);
     return res.status(405).json({ error: "Method not allowed" });
 
   } catch (err) {
     console.error("SERVER ERROR:", err);
-    return res.status(500).json({ error: "Server error", details: err.message });
+
+    return res.status(500).json({
+      error: "Server error",
+      details: err.message
+    });
   }
 }
-
