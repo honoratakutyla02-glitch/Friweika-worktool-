@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   try {
     let body = {};
 
-    // Ręczne parsowanie JSON (wymagane w Vercel serverless)
+    // Parsowanie body (Vercel serverless)
     if (req.method === "POST") {
       const raw = await new Promise(resolve => {
         let data = "";
@@ -44,15 +44,14 @@ export default async function handler(req, res) {
         });
       }
 
-      // Bardzo ważne — wymuszamy czyste tłumaczenie BEZ komentarzy
+      // 📌 NOWY PROMPT – BEZ CUDZYSŁOWÓW
       const prompt = `
-You are a translation engine. 
+You are a translation engine.
 Translate the following text from ${source} to ${target}.
-Return ONLY the translated text. 
-Do NOT add anything else (no notes, no explanations, no comments, no metadata).
+Return ONLY the translated text. No quotes, no explanations.
 
 Text:
-"${q}"
+${q}
 `;
 
       const response = await client.chat.completions.create({
@@ -66,8 +65,8 @@ Text:
 
       let translation = response.choices[0].message.content || "";
 
-      // Na wszelki wypadek — usuwamy nowe linie i nadwyżki spacji
-      translation = translation.trim();
+      // 📌 USUWANIE CUDZYSŁOWÓW Z ODPOWIEDZI
+      translation = translation.trim().replace(/^"+|"+$/g, "").replace(/^'+|'+$/g, "");
 
       return res.status(200).json({
         ok: true,
@@ -75,13 +74,12 @@ Text:
       });
     }
 
-    // Błędna metoda
     res.setHeader("Allow", ["GET", "POST"]);
     return res.status(405).json({ error: "Method not allowed" });
 
   } catch (err) {
     console.error("SERVER ERROR:", err);
-
+    
     return res.status(500).json({
       error: "Server error",
       details: err.message
