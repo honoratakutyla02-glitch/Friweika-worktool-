@@ -4,56 +4,188 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Friweika WorkTool — Prototype</title>
+
 <style>
-:root{--fri-yellow:#FBD345;--fri-red:#C52828;--fri-orange:#F76C1F;--fri-bg:#FFF7DA;--text-dark:#3A2A2A}
-*{box-sizing:border-box}
-body{margin:0;background:var(--fri-bg);font-family:Segoe UI, Roboto, Arial, sans-serif;color:var(--text-dark)}
-header{background:var(--fri-red);padding:12px;display:flex;align-items:center;gap:12px}
-header img{height:46px}
-.container{max-width:900px;margin:18px auto;padding:16px}
-.card{background:#fff;padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-.row{display:flex;gap:12px}
-label{display:block;margin:.6rem 0;color:var(--fri-red);font-weight:700}
-select,textarea,input{width:100%;padding:12px;border-radius:8px;border:1px solid #d9d9d9;font-size:15px}
+/* ======== KOLORY FRIWEIKI ======== */
+:root{
+  --fri-red:#C52828;
+  --fri-yellow:#FBD345;
+  --fri-orange:#F76C1F;
+  --fri-bg:#FFF7DA;
+  --fri-dark:#3A2A2A;
+}
+
+/* ======== RESET ======== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--fri-bg);
+  font-family:Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--fri-dark);
+  padding-bottom:90px; /* miejsce na dolną nawigację */
+}
+
+/* ======== HEADER ======== */
+header{
+  background:var(--fri-red);
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+header img{height:48px}
+header h1{
+  color:white;
+  margin:0;
+  font-size:20px;
+  font-weight:700;
+}
+
+/* ======== CONTAINER & CARDS ======== */
+.container{
+  max-width:900px;
+  margin:18px auto;
+  padding:12px;
+}
+.card{
+  background:white;
+  padding:16px;
+  border-radius:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+  margin-bottom:18px;
+}
+
+/* ======== FORM ======== */
+label{
+  margin-top:10px;
+  display:block;
+  font-weight:700;
+  color:var(--fri-red);
+}
+select,textarea,input{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  margin-top:6px;
+  font-size:15px;
+}
 textarea{min-height:110px}
-.controls{display:flex;gap:12px;margin-top:14px}
-.btn{padding:12px;border-radius:8px;border:none;cursor:pointer}
-.btn-primary{background:var(--fri-red);color:#fff;font-weight:700}
-.btn-ghost{background:#eee}
-.result{margin-top:12px}
-.result textarea{min-height:120px}
-.nav{position:fixed;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:3px solid var(--fri-yellow);display:flex}
-.nav .item{flex:1;text-align:center;padding:8px;color:#666;cursor:pointer}
-.nav .item.active{color:var(--fri-red);font-weight:700}
-.history-item{background:#fff;padding:12px;border-radius:10px;margin-bottom:10px}
-.small{font-size:13px;color:#666;margin-top:8px}
-.offline{display:none;background:#fff3f3;padding:10px;border-radius:8px;margin-bottom:10px;color:#700}
-.parts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.tag{padding:6px 8px;border-radius:8px;font-size:13px}
+
+/* ======== BUTTONS ======== */
+.controls{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.btn{
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-size:15px;
+}
+.btn-primary{
+  background:var(--fri-red);
+  color:white;
+  font-weight:700;
+}
+.btn-ghost{
+  background:#eee;
+}
+
+/* ======== RESULT ======== */
+.result textarea{
+  min-height:130px;
+}
+.small{
+  font-size:13px;
+  color:#666;
+  margin-top:6px;
+}
+.offline{
+  display:none;
+  background:#ffeaea;
+  padding:10px;
+  border-radius:10px;
+  color:#700;
+  margin-bottom:10px;
+}
+
+/* ======== ANALIZA ======== */
+.parts{
+  margin-top:8px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.tag{
+  padding:6px 8px;
+  border-radius:8px;
+  font-size:13px;
+}
 .tag.n{background:#e6f7ff;color:#0050b3}
 .tag.v{background:#fff0f6;color:#a8071a}
 .tag.a{background:#f6ffed;color:#237804}
-.footer-note{text-align:center;padding:12px;color:#666}
+
+/* ======== HISTORY ======== */
+.history-item{
+  background:#fff8e6;
+  border-left:4px solid var(--fri-orange);
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+/* ======== NAVIGATION BAR ======== */
+.nav{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  height:72px;
+  background:white;
+  border-top:3px solid var(--fri-yellow);
+  display:flex;
+}
+.nav .item{
+  flex:1;
+  text-align:center;
+  padding-top:8px;
+  color:#555;
+  cursor:pointer;
+  font-size:14px;
+}
+.nav .item span{
+  display:block;
+  font-size:22px;
+}
+.nav .item.active{
+  color:var(--fri-red);
+  font-weight:700;
+}
 </style>
 </head>
+
 <body>
+<!-- ======== HEADER ======== -->
 <header>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Friweika-Logo.jpg/640px-Friweika-Logo.jpg" alt="Friweika logo">
-  <h1 style="color:white;margin:0;font-size:20px">Friweika WorkTool — Prototype</h1>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Friweika-Logo.jpg/640px-Friweika-Logo.jpg">
+  <h1>Friweika WorkTool</h1>
 </header>
 
+<!-- ======== CONTENT ======== -->
 <div class="container">
+
+  <!-- TŁUMACZ -->
   <div class="card" id="translateCard">
     <div class="offline" id="offlineMsg">Brak połączenia — tłumaczenie online niedostępne.</div>
 
-    <label>Język źródłowy (source):</label>
+    <label>Język źródłowy:</label>
     <select id="langFrom">
       <option value="pl">Polski</option>
       <option value="de">Niemiecki</option>
       <option value="en">Angielski</option>
     </select>
 
-    <label>Język docelowy (target):</label>
+    <label>Język docelowy:</label>
     <select id="langTo">
       <option value="de">Niemiecki</option>
       <option value="pl">Polski</option>
@@ -61,197 +193,193 @@ textarea{min-height:110px}
     </select>
 
     <label>Tekst do tłumaczenia:</label>
-    <textarea id="sourceText" placeholder="Wpisz tekst..."></textarea>
+    <textarea id="sourceText"></textarea>
 
     <div class="controls">
       <button class="btn btn-primary" id="translateBtn">Tłumacz</button>
-      <button class="btn btn-ghost" id="googleBtn">Otwórz Google Translate</button>
+      <button class="btn btn-ghost" id="googleBtn">🌐</button>
       <button class="btn btn-ghost" id="micBtn">🎤</button>
       <button class="btn btn-ghost" id="imgBtn">📷</button>
     </div>
 
     <div class="result">
       <label>Tłumaczenie:</label>
-      <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
+      <textarea id="translatedText" readonly></textarea>
       <div class="small" id="debugNote"></div>
     </div>
 
-    <div style="margin-top:14px">
-      <label>Analiza (części mowy — podświetlenie):</label>
-      <div id="analysis" class="parts"></div>
-    </div>
-
+    <label>Analiza językowa:</label>
+    <div id="analysis" class="parts"></div>
   </div>
 
-  <div style="height:14px"></div>
-
+  <!-- HISTORIA -->
   <div class="card" id="historyCard">
     <h3>Historia tłumaczeń</h3>
     <div id="historyList"></div>
   </div>
 
-  <div style="height:120px"></div>
+  <!-- NAUKA -->
+  <div class="card" id="learnCard">
+    <h3>Tryb nauki</h3>
+    <p>Ta sekcja będzie zawierać:</p>
+    <ul style="margin:10px 20px;">
+      <li>• odmiany czasowników</li>
+      <li>• kolory części mowy</li>
+      <li>• liczby pojedyncze i mnogie</li>
+      <li>• listę słówek employer friendly</li>
+    </ul>
+    <p><i>(Wersja testowa — moduł będzie rozwinięty.)</i></p>
+  </div>
+
 </div>
 
+<!-- ======== BOTTOM NAV ======== -->
 <div class="nav">
-  <div class="item active" data-tab="translate">Tłumacz</div>
-  <div class="item" data-tab="history">Historia</div>
-  <div class="item" data-tab="learn">Nauka</div>
+  <div class="item active" data-tab="translate">
+    <span>🔤</span>Tłumacz
+  </div>
+  <div class="item" data-tab="history">
+    <span>📜</span>Historia
+  </div>
+  <div class="item" data-tab="learn">
+    <span>📚</span>Nauka
+  </div>
 </div>
-
-<div class="footer-note">Projekt testowy Friweika — prototype</div>
 
 <script>
-// ======= UI / NAV ======
-const navItems = document.querySelectorAll('.nav .item');
-const translateCard = document.getElementById('translateCard');
-const historyCard = document.getElementById('historyCard');
+/* ==== NAVIGATION ==== */
+const navItems=document.querySelectorAll('.nav .item');
+const translateCard=document.getElementById('translateCard');
+const historyCard=document.getElementById('historyCard');
+const learnCard=document.getElementById('learnCard');
 
-navItems.forEach(it => it.addEventListener('click', ()=>{
-  navItems.forEach(x=>x.classList.remove('active'));
-  it.classList.add('active');
-  const tab = it.dataset.tab;
-  translateCard.style.display = tab==='translate' ? 'block' : 'none';
-  historyCard.style.display = tab==='history' ? 'block' : 'none';
-  if(tab==='history') renderHistory();
-}));
-
-// start state
-translateCard.style.display='block'; historyCard.style.display='none';
-
-// ======= Helpers ======
-function setDebug(t){ document.getElementById('debugNote').textContent = t || ''; }
-
-// strip surrounding quotes and extra whitespace
-function cleanTranslation(s){
-  if(!s) return s;
-  s = s.trim();
-  // remove excessive leading/trailing quotes (single or double repeated)
-  while((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))){
-    s = s.slice(1,-1).trim();
-  }
-  return s;
+function show(tab){
+  translateCard.style.display = tab==="translate"?"block":"none";
+  historyCard.style.display   = tab==="history"?"block":"none";
+  learnCard.style.display     = tab==="learn"?"block":"none";
+  navItems.forEach(n=>n.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
 }
 
-// ======= TRANSLATION ======
-const translateBtn = document.getElementById('translateBtn');
-const googleBtn = document.getElementById('googleBtn');
-const micBtn = document.getElementById('micBtn');
-const imgBtn = document.getElementById('imgBtn');
+navItems.forEach(it=>it.onclick=()=>show(it.dataset.tab));
 
-translateBtn.addEventListener('click', async ()=>{
-  const q = document.getElementById('sourceText').value.trim();
-  const source = document.getElementById('langFrom').value;
-  const target = document.getElementById('langTo').value;
-  const out = document.getElementById('translatedText');
-  if(!q){ alert('Wpisz tekst.'); return; }
+show("translate");
 
-  out.value = 'Tłumaczę...'; setDebug('');
+/* ==== HELPERS ==== */
+function setDebug(t){document.getElementById('debugNote').textContent=t||"";}
+function clean(t){
+  if(!t) return t;
+  t=t.trim();
+  while((t.startsWith('"')&&t.endsWith('"'))||(t.startsWith("'")&&t.endsWith("'"))){
+    t=t.slice(1,-1).trim();
+  }
+  return t;
+}
+
+/* ==== TRANSLATION ==== */
+document.getElementById('translateBtn').onclick = async ()=>{
+  const q=document.getElementById('sourceText').value.trim();
+  const source=document.getElementById('langFrom').value;
+  const target=document.getElementById('langTo').value;
+  const out=document.getElementById('translatedText');
+
+  if(!q){alert("Wpisz tekst.");return;}
+
+  out.value="Tłumaczę...";
+  setDebug("");
+
   try{
-    const res = await fetch('/api/translate',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ q, source, target })
+    const res=await fetch("/api/translate",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({q,source,target})
     });
+    const j=await res.json();
+    const text=j.translation||j.translatedText||j.result||"";
+    const cleaned=clean(text);
+    out.value=cleaned;
 
-    const j = await res.json();
-    if(j.ok && (j.translation || j.translatedText || j.result)){
-      const raw = j.translation || j.translatedText || j.result;
-      const cleaned = cleanTranslation(raw);
-      out.value = cleaned;
-      saveHistory(q, cleaned);
-      // analiza części mowy (prosty parser / demo)
-      renderAnalysis(cleaned);
-    } else {
-      out.value = 'Błąd tłumaczenia.';
-      setDebug(JSON.stringify(j));
-    }
-  } catch(e){
-    out.value = 'Błąd połączenia z serwerem.'; setDebug(e.message);
+    saveHistory(q,cleaned);
+    renderAnalysis(cleaned);
+  }catch(e){
+    out.value="Błąd połączenia z serwerem.";
+    setDebug(e.message);
   }
-});
+};
 
-googleBtn.addEventListener('click', ()=>{
-  const txt = encodeURIComponent(document.getElementById('sourceText').value);
-  window.open('https://translate.google.com/?sl=auto&tl='+document.getElementById('langTo').value+'&text='+txt+'&op=translate','_blank');
-});
+/* ==== GOOGLE BUTTON ==== */
+document.getElementById('googleBtn').onclick=()=>{
+  const txt=encodeURIComponent(document.getElementById('sourceText').value);
+  window.open("https://translate.google.com/?sl=auto&tl="+document.getElementById('langTo').value+"&text="+txt+"&op=translate","_blank");
+};
 
-// ======= Microphone (Web Speech API fallback) ======
+/* ==== MICROPHONE ==== */
 let recognition;
-if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'pl-PL';
-  recognition.interimResults = false;
-  recognition.onresult = e => {
-    const t = Array.from(e.results).map(r=>r[0].transcript).join('');
-    document.getElementById('sourceText').value = t;
+if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang="pl-PL";
+  recognition.onresult=e=>{
+    const t=[...e.results].map(r=>r[0].transcript).join("");
+    document.getElementById('sourceText').value=t;
   };
-  recognition.onerror = e => setDebug('Speech error: '+e.error);
 }
+document.getElementById('micBtn').onclick=()=>{
+  if(!recognition){alert("Brak wsparcia mikrofonu.");return;}
+  recognition.start();
+};
 
-micBtn.addEventListener('click', ()=>{
-  if(!recognition){ alert('Mikrofon nie jest wspierany w tej przeglądarce.'); return; }
-  try{ recognition.start(); }catch(e){ setDebug(e.message); }
-});
-
-// ======= Simple image-upload & OCR call placeholder ======
-imgBtn.addEventListener('click', async ()=>{
-  const f = document.createElement('input'); f.type='file'; f.accept='image/*';
-  f.onchange = async ()=>{
-    if(!f.files[0]) return;
-    setDebug('Wysyłam obraz do OCR... (demo)');
-    // tutaj możesz wywołać endpoint OCR lub usługę OCR. Na prototypie pokażemy tylko nazwę pliku
-    const name = f.files[0].name;
-    document.getElementById('sourceText').value = '[Zdjęcie: '+name+']';
-    setDebug('OCR niezaimplementowany — dodaj backend do rozpoznawania tekstu.');
-  };
+/* ==== IMAGE (OCR PLACEHOLDER) ==== */
+document.getElementById('imgBtn').onclick=()=>{
+  const f=document.createElement("input");
+  f.type="file"; f.accept="image/*";
+  f.onchange=()=>{document.getElementById('sourceText').value="[Zdjęcie: "+f.files[0].name+"]";};
   f.click();
-});
+};
 
-// ======= HISTORY (localStorage) ======
-function saveHistory(inText, outText){
-  const list = JSON.parse(localStorage.getItem('fri_history')||'[]');
-  list.unshift({inText, outText, date:new Date().toLocaleString()});
-  localStorage.setItem('fri_history', JSON.stringify(list));
+/* ==== HISTORY ==== */
+function saveHistory(inp,out){
+  const list=JSON.parse(localStorage.getItem("fri_history")||"[]");
+  list.unshift({inp,out,date:new Date().toLocaleString()});
+  localStorage.setItem("fri_history",JSON.stringify(list));
 }
-
 function renderHistory(){
-  const list = JSON.parse(localStorage.getItem('fri_history')||'[]');
-  const box = document.getElementById('historyList'); box.innerHTML='';
-  if(list.length===0) box.innerHTML = '<p>Brak historii.</p>';
+  const list=JSON.parse(localStorage.getItem("fri_history")||"[]");
+  const box=document.getElementById("historyList");
+  box.innerHTML="";
+  if(list.length===0){box.innerHTML="<p>Brak historii.</p>";return;}
   list.forEach(it=>{
-    const el = document.createElement('div'); el.className='history-item';
-    el.innerHTML = `<div style="font-size:13px;color:#444;font-weight:700">${it.date}</div><div style="margin-top:6px"><b>Wejście:</b> ${escapeHtml(it.inText)}</div><div style="margin-top:6px"><b>Wyjście:</b> ${escapeHtml(it.outText)}</div>`;
+    const el=document.createElement("div");
+    el.className="history-item";
+    el.innerHTML=`
+      <div><b>${it.date}</b></div>
+      <div style="margin-top:6px"><b>Wejście:</b> ${it.inp}</div>
+      <div style="margin-top:6px"><b>Wyjście:</b> ${it.out}</div>
+    `;
     box.appendChild(el);
   });
 }
+historyCard.onclick=renderHistory;
 
-function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// ======= SIMPLE PART-OF-SPEECH DEMO (very naive) ======
-function renderAnalysis(text){
-  const out = document.getElementById('analysis'); out.innerHTML='';
-  if(!text) return;
-  const words = text.split(/\s+/).filter(Boolean);
-  words.forEach(w=>{
-    const cls = detectPOS(w);
-    const el = document.createElement('div'); el.className='tag '+cls; el.textContent = w; out.appendChild(el);
+/* ==== ANALYSIS ==== */
+function detectPOS(w){
+  const lw=w.toLowerCase();
+  if(/[0-9]/.test(lw))return"n";
+  if(lw.endsWith("ć")||lw.endsWith("ed")||lw.endsWith("ing"))return"v";
+  if(lw.endsWith("y")||lw.endsWith("a")||lw.endsWith("e"))return"n";
+  return"a";
+}
+function renderAnalysis(t){
+  const box=document.getElementById("analysis");
+  box.innerHTML="";
+  if(!t)return;
+  t.split(/\s+/).forEach(w=>{
+    const tag=document.createElement("div");
+    tag.className="tag "+detectPOS(w);
+    tag.textContent=w;
+    box.appendChild(tag);
   });
 }
-
-function detectPOS(word){
-  // super-prosty heurystyczny detektor (demo)
-  const lw = word.toLowerCase();
-  if(/[0-9]/.test(lw)) return 'tag.n'; // liczba
-  if(lw.endsWith('ć') || lw.endsWith('ed') || lw.endsWith('en') || lw.endsWith('ing')) return 'tag.v';
-  if(lw.endsWith('y') || lw.endsWith('a') || lw.endsWith('o') || lw.endsWith('e')) return 'tag.n';
-  return 'tag.a';
-}
-
-// init: render small analysis from initial value
-renderAnalysis('');
-
 </script>
 </body>
-  </html>
+</html>
