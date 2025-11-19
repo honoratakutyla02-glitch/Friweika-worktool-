@@ -6,178 +6,235 @@
 <title>Friweika WorkTool — Prototype</title>
 
 <style>
-/* ======== KOLORY FRIWEIKI ======== */
+/* ===================== */
+/* KOLORY FRIWEIKA        */
+/* ===================== */
 :root{
-  --fri-red:#C52828;
-  --fri-yellow:#FBD345;
+  --fri-yellow:#F7C948;
+  --fri-red:#C62026;
   --fri-orange:#F76C1F;
-  --fri-bg:#FFF7DA;
-  --fri-dark:#3A2A2A;
+  --fri-bg:#FFF5CC;
+  --text-dark:#2E1F1F;
 }
 
-/* ======== RESET ======== */
-*{box-sizing:border-box;margin:0;padding:0}
+/* ===================== */
+/* TŁO – zdjęcie budynku */
+/* ===================== */
 body{
-  background:var(--fri-bg);
-  font-family:Segoe UI,Roboto,Arial,sans-serif;
-  color:var(--fri-dark);
-  padding-bottom:90px; /* miejsce na dolną nawigację */
+  margin:0;
+  font-family:Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--text-dark);
+  background:url("./assets/friweika-bg.jpg") center/cover no-repeat fixed;
 }
 
-/* ======== HEADER ======== */
+body::before{
+  /* rozmycie i przyciemnienie */
+  content:"";
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  backdrop-filter:blur(6px);
+  background:rgba(255,255,255,0.6);
+  z-index:-1;
+}
+
+/* ===================== */
+/* HEADER DWUPOZIOMOWY   */
+/* ===================== */
+
 header{
   background:var(--fri-red);
-  padding:14px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-header img{height:48px}
-header h1{
+  padding:14px 16px;
   color:white;
-  margin:0;
-  font-size:20px;
-  font-weight:700;
+  text-align:center;
+  border-bottom:5px solid var(--fri-yellow);
 }
 
-/* ======== CONTAINER & CARDS ======== */
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.header-top img{
+  height:60px;
+}
+
+.header-title{
+  margin-top:4px;
+  font-size:22px;
+  font-weight:800;
+}
+
+.header-sub{
+  margin-top:-6px;
+  font-size:14px;
+  opacity:0.85;
+}
+
+/* ===================== */
+/* KARTY / SEKCJE        */
+/* ===================== */
+
 .container{
   max-width:900px;
   margin:18px auto;
-  padding:12px;
-}
-.card{
-  background:white;
   padding:16px;
-  border-radius:14px;
-  box-shadow:0 4px 12px rgba(0,0,0,.1);
-  margin-bottom:18px;
 }
 
-/* ======== FORM ======== */
+.card{
+  background:#fff;
+  padding:16px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+}
+
+/* ===================== */
+/* FORM / INPUTS         */
+/* ===================== */
+
 label{
-  margin-top:10px;
-  display:block;
+  margin-top:12px;
   font-weight:700;
   color:var(--fri-red);
 }
+
 select,textarea,input{
   width:100%;
   padding:12px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #d8d8d8;
   font-size:15px;
 }
-textarea{min-height:110px}
 
-/* ======== BUTTONS ======== */
+textarea{ min-height:110px; }
+
+/* ===================== */
+/* BUTTONY               */
+/* ===================== */
 .controls{
+  margin-top:14px;
   display:flex;
-  gap:10px;
-  margin-top:12px;
+  gap:12px;
 }
+
 .btn{
   padding:12px;
-  border-radius:10px;
+  border-radius:8px;
   border:none;
   cursor:pointer;
-  font-size:15px;
 }
+
 .btn-primary{
   background:var(--fri-red);
   color:white;
   font-weight:700;
 }
+
 .btn-ghost{
   background:#eee;
 }
 
-/* ======== RESULT ======== */
-.result textarea{
-  min-height:130px;
-}
-.small{
-  font-size:13px;
-  color:#666;
-  margin-top:6px;
-}
-.offline{
-  display:none;
-  background:#ffeaea;
-  padding:10px;
-  border-radius:10px;
-  color:#700;
-  margin-bottom:10px;
-}
-
-/* ======== ANALIZA ======== */
-.parts{
-  margin-top:8px;
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.tag{
-  padding:6px 8px;
-  border-radius:8px;
-  font-size:13px;
-}
-.tag.n{background:#e6f7ff;color:#0050b3}
-.tag.v{background:#fff0f6;color:#a8071a}
-.tag.a{background:#f6ffed;color:#237804}
-
-/* ======== HISTORY ======== */
-.history-item{
-  background:#fff8e6;
-  border-left:4px solid var(--fri-orange);
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-
-/* ======== NAVIGATION BAR ======== */
+/* ===================== */
+/* BOTTOM NAV            */
+/* ===================== */
 .nav{
   position:fixed;
-  left:0;right:0;bottom:0;
-  height:72px;
+  bottom:0;left:0;right:0;
+  height:70px;
   background:white;
   border-top:3px solid var(--fri-yellow);
   display:flex;
 }
+
 .nav .item{
   flex:1;
   text-align:center;
-  padding-top:8px;
-  color:#555;
-  cursor:pointer;
+  padding:10px;
   font-size:14px;
+  cursor:pointer;
+  color:#666;
 }
-.nav .item span{
-  display:block;
-  font-size:22px;
-}
+
 .nav .item.active{
   color:var(--fri-red);
   font-weight:700;
+}
+
+/* ===================== */
+/* HISTORIA              */
+/* ===================== */
+.history-item{
+  background:#fff;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+
+/* ===================== */
+/* ANALIZA + LEGENDA     */
+/* ===================== */
+
+.parts{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:8px;
+}
+
+.tag{
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:13px;
+}
+
+.tag.n{ background:#e6f7ff; color:#0050b3; } /* RZECZOWNIK */
+.tag.v{ background:#fff0f6; color:#a8071a; } /* CZASOWNIK */
+.tag.a{ background:#f6ffed; color:#237804; } /* PRZYMIOTNIK */
+
+.legend{
+  margin-top:8px;
+  font-size:13px;
+  background:#ffffffcc;
+  padding:8px;
+  border-radius:8px;
+}
+
+.footer{
+  text-align:center;
+  margin-top:40px;
+  padding-bottom:100px;
+  opacity:0.8;
+}
+
+.footer img{
+  width:160px;
+  margin-top:10px;
 }
 </style>
 </head>
 
 <body>
-<!-- ======== HEADER ======== -->
+
+<!-- ====================== -->
+<!-- HEADER                 -->
+<!-- ====================== -->
 <header>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Friweika-Logo.jpg/640px-Friweika-Logo.jpg">
-  <h1>Friweika WorkTool</h1>
+  <div class="header-top">
+    <img src="./assets/friweika-logo.png" alt="Friweika logo">
+  </div>
+
+  <div class="header-title">Friweika WorkTool</div>
+  <div class="header-sub">Prototype — wersja testowa</div>
 </header>
 
-<!-- ======== CONTENT ======== -->
+
 <div class="container">
 
-  <!-- TŁUMACZ -->
+  <!-- =========== TŁUMACZ ============= -->
   <div class="card" id="translateCard">
-    <div class="offline" id="offlineMsg">Brak połączenia — tłumaczenie online niedostępne.</div>
-
+    
     <label>Język źródłowy:</label>
     <select id="langFrom">
       <option value="pl">Polski</option>
@@ -193,193 +250,191 @@ textarea{min-height:110px}
     </select>
 
     <label>Tekst do tłumaczenia:</label>
-    <textarea id="sourceText"></textarea>
+    <textarea id="sourceText" placeholder="Wpisz tekst..."></textarea>
 
     <div class="controls">
       <button class="btn btn-primary" id="translateBtn">Tłumacz</button>
-      <button class="btn btn-ghost" id="googleBtn">🌐</button>
+      <button class="btn btn-ghost" id="googleBtn">Google Translate</button>
       <button class="btn btn-ghost" id="micBtn">🎤</button>
       <button class="btn btn-ghost" id="imgBtn">📷</button>
     </div>
 
-    <div class="result">
-      <label>Tłumaczenie:</label>
-      <textarea id="translatedText" readonly></textarea>
-      <div class="small" id="debugNote"></div>
+    <label style="margin-top:16px">Tłumaczenie:</label>
+    <textarea id="translatedText" readonly></textarea>
+
+    <div class="legend">
+      <b>Legenda analizy:</b><br>
+      <span class="tag n">rzeczownik</span>
+      <span class="tag v">czasownik</span>
+      <span class="tag a">przymiotnik</span>
     </div>
 
-    <label>Analiza językowa:</label>
-    <div id="analysis" class="parts"></div>
+    <label style="margin-top:16px">Analiza językowa:</label>
+    <div class="parts" id="analysis"></div>
+
   </div>
 
-  <!-- HISTORIA -->
-  <div class="card" id="historyCard">
+  <!-- =========== HISTORIA ============= -->
+  <div class="card" id="historyCard" style="display:none">
     <h3>Historia tłumaczeń</h3>
     <div id="historyList"></div>
   </div>
 
-  <!-- NAUKA -->
-  <div class="card" id="learnCard">
-    <h3>Tryb nauki</h3>
-    <p>Ta sekcja będzie zawierać:</p>
-    <ul style="margin:10px 20px;">
-      <li>• odmiany czasowników</li>
-      <li>• kolory części mowy</li>
-      <li>• liczby pojedyncze i mnogie</li>
-      <li>• listę słówek employer friendly</li>
-    </ul>
-    <p><i>(Wersja testowa — moduł będzie rozwinięty.)</i></p>
-  </div>
-
 </div>
 
-<!-- ======== BOTTOM NAV ======== -->
+<!-- STOPKA -->
+<div class="footer">
+  <img src="./assets/friweika-yellow.png" alt="Friweika footer logo">
+</div>
+
+<!-- ====================== -->
+<!-- NAV BOTTOM             -->
+<!-- ====================== -->
 <div class="nav">
-  <div class="item active" data-tab="translate">
-    <span>🔤</span>Tłumacz
-  </div>
-  <div class="item" data-tab="history">
-    <span>📜</span>Historia
-  </div>
-  <div class="item" data-tab="learn">
-    <span>📚</span>Nauka
-  </div>
+  <div class="item active" data-tab="translate">Tłumacz</div>
+  <div class="item" data-tab="history">Historia</div>
 </div>
 
 <script>
-/* ==== NAVIGATION ==== */
+/* === NAWIGACJA === */
 const navItems=document.querySelectorAll('.nav .item');
 const translateCard=document.getElementById('translateCard');
 const historyCard=document.getElementById('historyCard');
-const learnCard=document.getElementById('learnCard');
 
-function show(tab){
-  translateCard.style.display = tab==="translate"?"block":"none";
-  historyCard.style.display   = tab==="history"?"block":"none";
-  learnCard.style.display     = tab==="learn"?"block":"none";
-  navItems.forEach(n=>n.classList.remove('active'));
-  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-}
+navItems.forEach(it=>{
+  it.addEventListener('click',()=>{
+    navItems.forEach(x=>x.classList.remove('active'));
+    it.classList.add('active');
 
-navItems.forEach(it=>it.onclick=()=>show(it.dataset.tab));
+    const tab=it.dataset.tab;
+    translateCard.style.display=tab==="translate"?"block":"none";
+    historyCard.style.display=tab==="history"?"block":"none";
 
-show("translate");
+    if(tab==="history") renderHistory();
+  });
+});
 
-/* ==== HELPERS ==== */
-function setDebug(t){document.getElementById('debugNote').textContent=t||"";}
-function clean(t){
-  if(!t) return t;
-  t=t.trim();
-  while((t.startsWith('"')&&t.endsWith('"'))||(t.startsWith("'")&&t.endsWith("'"))){
-    t=t.slice(1,-1).trim();
+/* === KASOWANIE CUDÓW Z TŁUMACZENIA === */
+function cleanTranslation(s){
+  if(!s) return s;
+  s=s.trim();
+  while((s.startsWith('"')&&s.endsWith('"'))||(s.startsWith("'")&&s.endsWith("'"))) {
+    s=s.slice(1,-1).trim();
   }
-  return t;
+  return s;
 }
 
-/* ==== TRANSLATION ==== */
-document.getElementById('translateBtn').onclick = async ()=>{
-  const q=document.getElementById('sourceText').value.trim();
-  const source=document.getElementById('langFrom').value;
-  const target=document.getElementById('langTo').value;
-  const out=document.getElementById('translatedText');
+/* === TŁUMACZ === */
+document.getElementById("translateBtn").addEventListener("click",async ()=>{
+  const q=document.getElementById("sourceText").value.trim();
+  const source=document.getElementById("langFrom").value;
+  const target=document.getElementById("langTo").value;
+  const out=document.getElementById("translatedText");
 
-  if(!q){alert("Wpisz tekst.");return;}
+  if(!q){ alert("Wpisz tekst"); return; }
 
   out.value="Tłumaczę...";
-  setDebug("");
 
   try{
     const res=await fetch("/api/translate",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({q,source,target})
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ q,source,target })
     });
+
     const j=await res.json();
-    const text=j.translation||j.translatedText||j.result||"";
-    const cleaned=clean(text);
-    out.value=cleaned;
 
-    saveHistory(q,cleaned);
-    renderAnalysis(cleaned);
+    if(j.ok && j.translation){
+      const t=cleanTranslation(j.translation);
+      out.value=t;
+      saveHistory(q,t);
+      renderAnalysis(t);
+    }else{
+      out.value="Błąd tłumaczenia";
+    }
   }catch(e){
-    out.value="Błąd połączenia z serwerem.";
-    setDebug(e.message);
+    out.value="Błąd połączenia z serwerem";
   }
-};
+});
 
-/* ==== GOOGLE BUTTON ==== */
-document.getElementById('googleBtn').onclick=()=>{
-  const txt=encodeURIComponent(document.getElementById('sourceText').value);
-  window.open("https://translate.google.com/?sl=auto&tl="+document.getElementById('langTo').value+"&text="+txt+"&op=translate","_blank");
-};
+/* === Google Translate link === */
+document.getElementById("googleBtn").addEventListener("click",()=>{
+  const txt=encodeURIComponent(document.getElementById("sourceText").value);
+  window.open(`https://translate.google.com/?sl=auto&tl=${document.getElementById('langTo').value}&text=${txt}&op=translate`);
+});
 
-/* ==== MICROPHONE ==== */
+/* === Mikrofon === */
 let recognition;
-if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){
+if("webkitSpeechRecognition" in window || "SpeechRecognition" in window){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   recognition=new SR();
   recognition.lang="pl-PL";
   recognition.onresult=e=>{
-    const t=[...e.results].map(r=>r[0].transcript).join("");
-    document.getElementById('sourceText').value=t;
+    document.getElementById("sourceText").value = e.results[0][0].transcript;
   };
 }
-document.getElementById('micBtn').onclick=()=>{
-  if(!recognition){alert("Brak wsparcia mikrofonu.");return;}
-  recognition.start();
-};
 
-/* ==== IMAGE (OCR PLACEHOLDER) ==== */
-document.getElementById('imgBtn').onclick=()=>{
-  const f=document.createElement("input");
-  f.type="file"; f.accept="image/*";
-  f.onchange=()=>{document.getElementById('sourceText').value="[Zdjęcie: "+f.files[0].name+"]";};
-  f.click();
-};
+document.getElementById("micBtn").addEventListener("click",()=>{
+  if(recognition){
+    recognition.start();
+  }else alert("Brak wsparcia mikrofonu");
+});
 
-/* ==== HISTORY ==== */
-function saveHistory(inp,out){
+
+/* === HISTORY === */
+function saveHistory(q,t){
   const list=JSON.parse(localStorage.getItem("fri_history")||"[]");
-  list.unshift({inp,out,date:new Date().toLocaleString()});
+  list.unshift({ q,t,date:new Date().toLocaleString() });
   localStorage.setItem("fri_history",JSON.stringify(list));
 }
+
 function renderHistory(){
   const list=JSON.parse(localStorage.getItem("fri_history")||"[]");
   const box=document.getElementById("historyList");
   box.innerHTML="";
-  if(list.length===0){box.innerHTML="<p>Brak historii.</p>";return;}
+
+  if(list.length===0){
+    box.innerHTML="<p>Brak historii.</p>";
+    return;
+  }
+
   list.forEach(it=>{
     const el=document.createElement("div");
     el.className="history-item";
-    el.innerHTML=`
-      <div><b>${it.date}</b></div>
-      <div style="margin-top:6px"><b>Wejście:</b> ${it.inp}</div>
-      <div style="margin-top:6px"><b>Wyjście:</b> ${it.out}</div>
-    `;
+    el.innerHTML=
+      `<div><b>${it.date}</b></div>
+       <div style="margin-top:6px"><b>Wejście:</b> ${it.q}</div>
+       <div style="margin-top:6px"><b>Wyjście:</b> ${it.t}</div>`;
     box.appendChild(el);
   });
 }
-historyCard.onclick=renderHistory;
 
-/* ==== ANALYSIS ==== */
-function detectPOS(w){
-  const lw=w.toLowerCase();
-  if(/[0-9]/.test(lw))return"n";
-  if(lw.endsWith("ć")||lw.endsWith("ed")||lw.endsWith("ing"))return"v";
-  if(lw.endsWith("y")||lw.endsWith("a")||lw.endsWith("e"))return"n";
-  return"a";
+/* === ANALIZA JĘZYKOWA === */
+function detectPOS(word){
+  const w=word.toLowerCase();
+  if(/[0-9]/.test(w)) return "n";
+  if(w.endsWith("ć")||w.endsWith("ing")||w.endsWith("ed")) return "v";
+  if(w.endsWith("y")||w.endsWith("a")||w.endsWith("o")||w.endsWith("e")) return "n";
+  return "a";
 }
-function renderAnalysis(t){
+
+function renderAnalysis(text){
   const box=document.getElementById("analysis");
   box.innerHTML="";
-  if(!t)return;
-  t.split(/\s+/).forEach(w=>{
-    const tag=document.createElement("div");
-    tag.className="tag "+detectPOS(w);
-    tag.textContent=w;
-    box.appendChild(tag);
+  if(!text) return;
+
+  const words=[...new Set(
+    text.split(/[^a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+/).filter(x=>x.trim().length>0)
+  )];
+
+  words.forEach(w=>{
+    const t=document.createElement("div");
+    t.className="tag "+detectPOS(w);
+    t.textContent=w;
+    box.appendChild(t);
   });
 }
 </script>
+
 </body>
 </html>
