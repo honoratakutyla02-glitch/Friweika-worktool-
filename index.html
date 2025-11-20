@@ -7,22 +7,15 @@
 
 <style>
 
-/* ======== KOLORY (B1 – mocniejsze, firmowe) ======== */
+/* ======== KOLORY FIRMOWE ======== */
 :root{
   --fri-yellow:#FBD345;
-  --fri-red:#C52626;
-  --fri-orange:#F4741B;
-  --fri-bg:#FFF3D2;
+  --fri-red:#C52828;
+  --fri-orange:#F76C1F;
+  --fri-bg:#FFF4D6;
   --text-dark:#3A2A2A;
 
-  --tag-n-bg:#d3ecff;
-  --tag-n-txt:#003a73;
-
-  --tag-v-bg:#ffd6e3;
-  --tag-v-txt:#a90026;
-
-  --tag-a-bg:#dbffdc;
-  --tag-a-txt:#0e5c15;
+  --fri-red-dark:#9e1c1c;
 }
 
 /* ======== RESET ======== */
@@ -37,17 +30,16 @@ body{
   overflow-x:hidden;
 }
 
-/* ======== TŁO (budynek — blur) ======== */
+/* ======== TŁO Z BUDYNKIEM ======== */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   background:url('assets/friweika-bg.jpg') center/cover no-repeat;
-  filter:blur(10px) brightness(0.88);
+  filter:blur(12px) brightness(0.9);
   z-index:-2;
 }
 
-/* warstwa czytelności */
 body::after{
   content:"";
   position:fixed;
@@ -58,20 +50,17 @@ body::after{
 
 /* ======== HEADER ======== */
 header{
-  background:rgba(255,255,255,0.75);
-  backdrop-filter:blur(8px);
-  padding:10px 14px;
+  background:var(--fri-red);
+  padding:10px 16px;
   display:flex;
   align-items:center;
   gap:14px;
-  border-bottom:4px solid var(--fri-yellow);
 }
 header img{
-  height:58px;
-  filter:drop-shadow(0 3px 3px rgba(0,0,0,0.25));
+  height:60px;
 }
 header h1{
-  color:var(--fri-red);
+  color:white;
   margin:0;
   font-size:22px;
   font-weight:900;
@@ -83,11 +72,8 @@ header h1{
   margin:18px auto;
   padding:16px;
 }
-
-/* ======== CARD ======== */
 .card{
-  background:rgba(255,255,255,0.88);
-  backdrop-filter:blur(5px);
+  background:#fff;
   padding:16px;
   border-radius:14px;
   box-shadow:0 6px 18px rgba(0,0,0,.08);
@@ -109,7 +95,7 @@ select,textarea,input{
 }
 textarea{ min-height:110px; }
 
-/* ======== BUTTONS ======== */
+/* ======== BUTTONY ======== */
 .controls{
   display:flex;
   gap:12px;
@@ -127,18 +113,20 @@ textarea{ min-height:110px; }
   color:#fff;
 }
 .btn-ghost{
-  background:#eee;
+  background:#f9f9f9;
+  border:1px solid #ccc;
 }
 
-/* ======== NAV ======== */
+/* ======== DÓŁ — NAWIGACJA ======== */
 .nav{
   position:fixed;
   left:0; right:0;
   bottom:0;
   height:72px;
   background:#fff;
-  border-top:3px solid var(--fri-yellow);
+  border-top:4px solid var(--fri-yellow);
   display:flex;
+  z-index:20;
 }
 .nav .item{
   flex:1;
@@ -162,18 +150,17 @@ textarea{ min-height:110px; }
 }
 .small{ font-size:13px; color:#666; margin-top:8px; }
 
-/* ===== LEGEND ===== */
+/* ===== LEGENDA ===== */
 .legend{
   margin-top:12px;
-  padding:12px;
-  background:#fff4c6;
+  padding:10px;
+  background:#fff8dd;
   border-radius:10px;
   font-size:14px;
-  border:2px solid var(--fri-yellow);
 }
 .legend div{ margin:4px 0; }
 
-/* ===== TAGI części mowy ===== */
+/* ====== TAGI CZĘŚCI MOWY - MOCNIEJSZE KOLORY ====== */
 .parts{
   display:flex;
   gap:8px;
@@ -181,31 +168,32 @@ textarea{ min-height:110px; }
   margin-top:8px;
 }
 .tag{
-  padding:6px 10px;
+  padding:6px 8px;
   border-radius:8px;
   font-size:13px;
-  font-weight:700;
 }
-.tag.n{ background:var(--tag-n-bg); color:var(--tag-n-txt); }
-.tag.v{ background:var(--tag-v-bg); color:var(--tag-v-txt); }
-.tag.a{ background:var(--tag-a-bg); color:var(--tag-a-txt); }
+.tag.n{ background:#b4e1ff; color:#003a66; font-weight:700; }
+.tag.v{ background:#ffccd5; color:#7d0010; font-weight:700; }
+.tag.a{ background:#c9ffb3; color:#144d00; font-weight:700; }
 
-/* ===== FOOTER ===== */
-.footer-logo{
-  margin-top:60px;
+/* ===== STOPKA (WERSJA B) ===== */
+.footer{
+  background:var(--fri-red-dark);
+  padding:18px 12px 26px;
+  margin-top:90px;
+  border-top:4px solid var(--fri-yellow);
   text-align:center;
+  color:white;
 }
-.footer-logo img{
-  width:180px;
+.footer img{
+  width:160px;
+  display:block;
+  margin:0 auto 6px;
   opacity:0.95;
-  filter:drop-shadow(0 3px 4px rgba(0,0,0,0.25));
 }
-
-.footer-note{
-  text-align:center;
-  padding:12px;
-  color:#444;
+.footer .note{
   font-size:14px;
+  opacity:0.9;
 }
 
 </style>
@@ -248,11 +236,9 @@ textarea{ min-height:110px; }
       <button class="btn btn-ghost" id="imgBtn">📷</button>
     </div>
 
-    <div class="result">
-      <label>Tłumaczenie:</label>
-      <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
-      <div class="small" id="debugNote"></div>
-    </div>
+    <label style="margin-top:14px;">Tłumaczenie:</label>
+    <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
+    <div class="small" id="debugNote"></div>
 
     <!-- ===== ANALIZA ===== -->
     <div style="margin-top:14px">
@@ -277,14 +263,21 @@ textarea{ min-height:110px; }
   </div>
 
   <div style="height:80px"></div>
+
 </div>
 
-<!-- STOPKA -->
-<div class="footer-logo">
-  <img src="assets/friweika-logo.png" alt="Friweika logo clean">
+<!-- ====== STOPKA WERSJA B ====== -->
+<div class="footer">
+  <img src="assets/friweika-logo.png" alt="Friweika logo">
+  <div class="note">Wersja testowa Friweika — Prototype</div>
 </div>
 
-<div class="footer-note">Wersja testowa Friweika — Prototype</div>
+<!-- ===== NAV ===== -->
+<div class="nav">
+  <div class="item active" data-tab="translate">Tłumacz</div>
+  <div class="item" data-tab="history">Historia</div>
+  <div class="item" data-tab="learn">Nauka</div>
+</div>
 
 <!-- ===== SCRIPT ===== -->
 <script>
@@ -293,6 +286,7 @@ textarea{ min-height:110px; }
 const navItems=document.querySelectorAll('.nav .item');
 const translateCard=document.getElementById('translateCard');
 const historyCard=document.getElementById('historyCard');
+
 navItems.forEach(it=>it.addEventListener('click',()=>{
   navItems.forEach(x=>x.classList.remove('active'));
   it.classList.add('active');
@@ -305,10 +299,10 @@ navItems.forEach(it=>it.addEventListener('click',()=>{
 translateCard.style.display='block';
 historyCard.style.display='none';
 
-// DEBUG
+// Debug
 function setDebug(t){ document.getElementById('debugNote').textContent=t||''; }
 
-// ================= TRANSLACJA ==================
+// TRANSLACJA
 document.getElementById('translateBtn').addEventListener('click',async()=>{
   const q=document.getElementById('sourceText').value.trim();
   const source=document.getElementById('langFrom').value;
@@ -362,6 +356,7 @@ if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){
     document.getElementById('sourceText').value=t;
   };
 }
+
 document.getElementById('micBtn').addEventListener('click',()=>{
   if(!recognition){ alert('Brak wsparcia mikrofonu.'); return; }
   recognition.start();
@@ -372,12 +367,13 @@ document.getElementById('imgBtn').addEventListener('click',()=>{
   alert('OCR dojdzie później :)');
 });
 
-// ================= HISTORIA =================
+// HISTORIA
 function saveHistory(i,o){
   const list=JSON.parse(localStorage.getItem('fri_history')||'[]');
   list.unshift({i,o,date:new Date().toLocaleString()});
   localStorage.setItem('fri_history',JSON.stringify(list));
 }
+
 function renderHistory(){
   const list=JSON.parse(localStorage.getItem('fri_history')||'[]');
   const box=document.getElementById('historyList');
@@ -394,7 +390,7 @@ function renderHistory(){
   });
 }
 
-// ======= ANALIZA SŁÓW =======
+// ANALIZA
 function renderAnalysis(t){
   const out=document.getElementById('analysis');
   out.innerHTML='';
@@ -408,6 +404,7 @@ function renderAnalysis(t){
     out.appendChild(el);
   });
 }
+
 function detectPOS(w){
   const lw=w.toLowerCase();
   if(/[0-9]/.test(lw)) return 'n';
@@ -417,5 +414,6 @@ function detectPOS(w){
 }
 
 </script>
+
 </body>
 </html>
