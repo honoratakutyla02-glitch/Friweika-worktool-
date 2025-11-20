@@ -7,13 +7,22 @@
 
 <style>
 
-/* ======== KOLORY FIRMOWE ======== */
+/* ======== KOLORY (B1 – mocniejsze, firmowe) ======== */
 :root{
   --fri-yellow:#FBD345;
-  --fri-red:#C52828;
-  --fri-orange:#F76C1F;
-  --fri-bg:#FFF7DA;
+  --fri-red:#C52626;
+  --fri-orange:#F4741B;
+  --fri-bg:#FFF3D2;
   --text-dark:#3A2A2A;
+
+  --tag-n-bg:#d3ecff;
+  --tag-n-txt:#003a73;
+
+  --tag-v-bg:#ffd6e3;
+  --tag-v-txt:#a90026;
+
+  --tag-a-bg:#dbffdc;
+  --tag-a-txt:#0e5c15;
 }
 
 /* ======== RESET ======== */
@@ -28,51 +37,57 @@ body{
   overflow-x:hidden;
 }
 
-/* ======== TŁO (budynek, mocny blur) ======== */
+/* ======== TŁO (budynek — blur) ======== */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:url('assets/friweika-bg-strong.jpg') center/cover no-repeat;
-  filter:blur(10px) brightness(0.9);
+  background:url('assets/friweika-bg.jpg') center/cover no-repeat;
+  filter:blur(10px) brightness(0.88);
   z-index:-2;
 }
 
-/* ciemna warstwa aby treść była czytelniejsza */
+/* warstwa czytelności */
 body::after{
   content:"";
   position:fixed;
   inset:0;
-  background:rgba(255,255,255,0.5);
+  background:rgba(255,255,255,0.55);
   z-index:-1;
 }
 
 /* ======== HEADER ======== */
 header{
-  background:var(--fri-red);
-  padding:12px;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(8px);
+  padding:10px 14px;
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:14px;
+  border-bottom:4px solid var(--fri-yellow);
 }
 header img{
-  height:52px;
+  height:58px;
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,0.25));
 }
 header h1{
-  color:white;
+  color:var(--fri-red);
   margin:0;
   font-size:22px;
   font-weight:900;
 }
 
-/* ======== CONTAINER / CARD ======== */
+/* ======== CONTAINER ======== */
 .container{
   max-width:900px;
   margin:18px auto;
   padding:16px;
 }
+
+/* ======== CARD ======== */
 .card{
-  background:#fff;
+  background:rgba(255,255,255,0.88);
+  backdrop-filter:blur(5px);
   padding:16px;
   border-radius:14px;
   box-shadow:0 6px 18px rgba(0,0,0,.08);
@@ -115,7 +130,7 @@ textarea{ min-height:110px; }
   background:#eee;
 }
 
-/* ======== NAV DÓŁ ======== */
+/* ======== NAV ======== */
 .nav{
   position:fixed;
   left:0; right:0;
@@ -150,10 +165,11 @@ textarea{ min-height:110px; }
 /* ===== LEGEND ===== */
 .legend{
   margin-top:12px;
-  padding:10px;
-  background:#fff8dd;
+  padding:12px;
+  background:#fff4c6;
   border-radius:10px;
   font-size:14px;
+  border:2px solid var(--fri-yellow);
 }
 .legend div{ margin:4px 0; }
 
@@ -165,13 +181,14 @@ textarea{ min-height:110px; }
   margin-top:8px;
 }
 .tag{
-  padding:6px 8px;
+  padding:6px 10px;
   border-radius:8px;
   font-size:13px;
+  font-weight:700;
 }
-.tag.n{ background:#e6f7ff; color:#0050b3; }
-.tag.v{ background:#fff0f6; color:#a8071a; }
-.tag.a{ background:#f6ffed; color:#237804; }
+.tag.n{ background:var(--tag-n-bg); color:var(--tag-n-txt); }
+.tag.v{ background:var(--tag-v-bg); color:var(--tag-v-txt); }
+.tag.a{ background:var(--tag-a-bg); color:var(--tag-a-txt); }
 
 /* ===== FOOTER ===== */
 .footer-logo{
@@ -180,7 +197,8 @@ textarea{ min-height:110px; }
 }
 .footer-logo img{
   width:180px;
-  opacity:0.9;
+  opacity:0.95;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,0.25));
 }
 
 .footer-note{
@@ -197,7 +215,7 @@ textarea{ min-height:110px; }
 
 <!-- ===== HEADER ===== -->
 <header>
-  <img src="assets/friweika-logo.png" alt="Friweika logo">
+  <img src="assets/friweika-potato.png" alt="Friweika potato logo">
   <h1>Friweika WorkTool — Prototype</h1>
 </header>
 
@@ -261,19 +279,12 @@ textarea{ min-height:110px; }
   <div style="height:80px"></div>
 </div>
 
-<!-- STOPKA Z ŻÓŁTYM LOGO -->
+<!-- STOPKA -->
 <div class="footer-logo">
-  <img src="assets/friweika-yellow.png" alt="Friweika yellow logo">
+  <img src="assets/friweika-logo.png" alt="Friweika logo clean">
 </div>
 
 <div class="footer-note">Wersja testowa Friweika — Prototype</div>
-
-<!-- ===== NAV ===== -->
-<div class="nav">
-  <div class="item active" data-tab="translate">Tłumacz</div>
-  <div class="item" data-tab="history">Historia</div>
-  <div class="item" data-tab="learn">Nauka</div>
-</div>
 
 <!-- ===== SCRIPT ===== -->
 <script>
