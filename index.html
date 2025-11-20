@@ -1,419 +1,325 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Friweika WorkTool — Prototype</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tłumacz — Minimalny Szablon (Historia + Nauka)</title>
+  <style>
+    :root{
+      --bg:#0f1113; /* dark bg by default */
+      --surface:#121315;
+      --text:#e6eef3;
+      --muted:#9aa6b2;
+      --accent:#007BFF;
 
-<style>
+      /* role colors (font colors, high contrast) */
+      --noun:#007BFF;   /* niebieski */
+      --verb:#00C851;   /* zielony */
+      --adj:#FFEB3B;    /* żółty (wyrazisty) */
+      --adv:#AF52DE;    /* fiolet */
+      --prep:#FF9500;   /* pomarańcz */
 
-/* ======== KOLORY FIRMOWE ======== */
-:root{
-  --fri-yellow:#FBD345;
-  --fri-red:#C52828;
-  --fri-orange:#F76C1F;
-  --fri-bg:#FFF4D6;
-  --text-dark:#3A2A2A;
+      /* determiner (rodzajniki) fixed mapping (A) */
+      --der:#FF3B30; /* czerwony */
+      --die:#00C851; /* zielony */
+      --das:#007BFF; /* niebieski */
 
-  --fri-red-dark:#9e1c1c;
-}
-
-/* ======== RESET ======== */
-*{ box-sizing:border-box; }
-body{
-  margin:0;
-  background:var(--fri-bg);
-  font-family:Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--text-dark);
-  position:relative;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-/* ======== TŁO Z BUDYNKIEM ======== */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url('assets/friweika-bg.jpg') center/cover no-repeat;
-  filter:blur(12px) brightness(0.9);
-  z-index:-2;
-}
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,0.55);
-  z-index:-1;
-}
-
-/* ======== HEADER ======== */
-header{
-  background:var(--fri-red);
-  padding:10px 16px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-header img{
-  height:60px;
-}
-header h1{
-  color:white;
-  margin:0;
-  font-size:22px;
-  font-weight:900;
-}
-
-/* ======== CONTAINER ======== */
-.container{
-  max-width:900px;
-  margin:18px auto;
-  padding:16px;
-}
-.card{
-  background:#fff;
-  padding:16px;
-  border-radius:14px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
-}
-
-/* ======== FORM ======== */
-label{
-  display:block;
-  margin:.6rem 0;
-  color:var(--fri-red);
-  font-weight:700;
-}
-select,textarea,input{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #d9d9d9;
-  font-size:15px;
-}
-textarea{ min-height:110px; }
-
-/* ======== BUTTONY ======== */
-.controls{
-  display:flex;
-  gap:12px;
-  margin-top:14px;
-}
-.btn{
-  padding:12px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  font-weight:700;
-}
-.btn-primary{
-  background:var(--fri-red);
-  color:#fff;
-}
-.btn-ghost{
-  background:#f9f9f9;
-  border:1px solid #ccc;
-}
-
-/* ======== DÓŁ — NAWIGACJA ======== */
-.nav{
-  position:fixed;
-  left:0; right:0;
-  bottom:0;
-  height:72px;
-  background:#fff;
-  border-top:4px solid var(--fri-yellow);
-  display:flex;
-  z-index:20;
-}
-.nav .item{
-  flex:1;
-  text-align:center;
-  padding:8px;
-  color:#666;
-  cursor:pointer;
-  font-size:14px;
-}
-.nav .item.active{
-  color:var(--fri-red);
-  font-weight:700;
-}
-
-/* ===== HISTORIA ===== */
-.history-item{
-  background:#fff;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-.small{ font-size:13px; color:#666; margin-top:8px; }
-
-/* ===== LEGENDA ===== */
-.legend{
-  margin-top:12px;
-  padding:10px;
-  background:#fff8dd;
-  border-radius:10px;
-  font-size:14px;
-}
-.legend div{ margin:4px 0; }
-
-/* ====== TAGI CZĘŚCI MOWY - MOCNIEJSZE KOLORY ====== */
-.parts{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:8px;
-}
-.tag{
-  padding:6px 8px;
-  border-radius:8px;
-  font-size:13px;
-}
-.tag.n{ background:#b4e1ff; color:#003a66; font-weight:700; }
-.tag.v{ background:#ffccd5; color:#7d0010; font-weight:700; }
-.tag.a{ background:#c9ffb3; color:#144d00; font-weight:700; }
-
-/* ===== STOPKA (WERSJA B) ===== */
-.footer{
-  background:var(--fri-red-dark);
-  padding:18px 12px 26px;
-  margin-top:90px;
-  border-top:4px solid var(--fri-yellow);
-  text-align:center;
-  color:white;
-}
-.footer img{
-  width:160px;
-  display:block;
-  margin:0 auto 6px;
-  opacity:0.95;
-}
-.footer .note{
-  font-size:14px;
-  opacity:0.9;
-}
-
-</style>
-</head>
-
-<body>
-
-<!-- ===== HEADER ===== -->
-<header>
-  <img src="assets/friweika-potato.png" alt="Friweika potato logo">
-  <h1>Friweika WorkTool — Prototype</h1>
-</header>
-
-<div class="container">
-
-  <!-- ===== TŁUMACZ ===== -->
-  <div class="card" id="translateCard">
-
-    <label>Język źródłowy (source):</label>
-    <select id="langFrom">
-      <option value="pl">Polski</option>
-      <option value="de">Niemiecki</option>
-      <option value="en">Angielski</option>
-    </select>
-
-    <label>Język docelowy (target):</label>
-    <select id="langTo">
-      <option value="de">Niemiecki</option>
-      <option value="pl">Polski</option>
-      <option value="en">Angielski</option>
-    </select>
-
-    <label>Tekst do tłumaczenia:</label>
-    <textarea id="sourceText" placeholder="Wpisz tekst..."></textarea>
-
-    <div class="controls">
-      <button class="btn btn-primary" id="translateBtn">Tłumacz</button>
-      <button class="btn btn-ghost" id="googleBtn">🌐</button>
-      <button class="btn btn-ghost" id="micBtn">🎤</button>
-      <button class="btn btn-ghost" id="imgBtn">📷</button>
-    </div>
-
-    <label style="margin-top:14px;">Tłumaczenie:</label>
-    <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
-    <div class="small" id="debugNote"></div>
-
-    <!-- ===== ANALIZA ===== -->
-    <div style="margin-top:14px">
-      <label>Analiza językowa:</label>
-      <div id="analysis" class="parts"></div>
-
-      <div class="legend">
-        <div><span class="tag n">słowo</span> — rzeczownik</div>
-        <div><span class="tag v">słowo</span> — czasownik</div>
-        <div><span class="tag a">słowo</span> — przymiotnik / inne</div>
-      </div>
-    </div>
-
-  </div>
-
-  <div style="height:14px"></div>
-
-  <!-- ===== HISTORIA ===== -->
-  <div class="card" id="historyCard">
-    <h3>Historia tłumaczeń</h3>
-    <div id="historyList"></div>
-  </div>
-
-  <div style="height:80px"></div>
-
-</div>
-
-<!-- ====== STOPKA WERSJA B ====== -->
-<div class="footer">
-  <img src="assets/friweika-logo.png" alt="Friweika logo">
-  <div class="note">Wersja testowa Friweika — Prototype</div>
-</div>
-
-<!-- ===== NAV ===== -->
-<div class="nav">
-  <div class="item active" data-tab="translate">Tłumacz</div>
-  <div class="item" data-tab="history">Historia</div>
-  <div class="item" data-tab="learn">Nauka</div>
-</div>
-
-<!-- ===== SCRIPT ===== -->
-<script>
-
-// NAV
-const navItems=document.querySelectorAll('.nav .item');
-const translateCard=document.getElementById('translateCard');
-const historyCard=document.getElementById('historyCard');
-
-navItems.forEach(it=>it.addEventListener('click',()=>{
-  navItems.forEach(x=>x.classList.remove('active'));
-  it.classList.add('active');
-  const tab=it.dataset.tab;
-  translateCard.style.display = tab==='translate'?'block':'none';
-  historyCard.style.display = tab==='history'?'block':'none';
-  if(tab==='history') renderHistory();
-}));
-
-translateCard.style.display='block';
-historyCard.style.display='none';
-
-// Debug
-function setDebug(t){ document.getElementById('debugNote').textContent=t||''; }
-
-// TRANSLACJA
-document.getElementById('translateBtn').addEventListener('click',async()=>{
-  const q=document.getElementById('sourceText').value.trim();
-  const source=document.getElementById('langFrom').value;
-  const target=document.getElementById('langTo').value;
-  const out=document.getElementById('translatedText');
-  if(!q){ alert('Wpisz tekst.'); return; }
-
-  out.value='Tłumaczę...'; setDebug('');
-
-  try{
-    const res=await fetch('/api/translate',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({q,source,target})
-    });
-    const j=await res.json();
-    if(j.ok && j.translation){
-      out.value=j.translation;
-      saveHistory(q,j.translation);
-      renderAnalysis(j.translation);
-    } else {
-      out.value='Błąd tłumaczenia.';
-      setDebug(JSON.stringify(j));
+      --card:#0b0c0d;
+      --glass: rgba(255,255,255,0.02);
     }
-  }catch(e){
-    out.value='Błąd połączenia z serwerem.';
-    setDebug(e.message);
-  }
-});
 
-// Google
-document.getElementById('googleBtn').addEventListener('click',()=>{
-  const txt=encodeURIComponent(document.getElementById('sourceText').value);
-  window.open(
-    'https://translate.google.com/?sl=auto&tl='+
-    document.getElementById('langTo').value+
-    '&text='+txt,
-    '_blank'
-  );
-});
+    /* Light mode override (prefers-color-scheme) */
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f6f8fa;
+        --surface: #ffffff;
+        --text: #0b1220;
+        --muted:#4b5b66;
+        --card:#ffffff;
+        --glass: rgba(11,18,32,0.03);
+      }
+    }
 
-// Mikrofon
-let recognition;
-if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recognition=new SR();
-  recognition.lang='pl-PL';
-  recognition.interimResults=false;
-  recognition.onresult=e=>{
-    const t=[...e.results].map(r=>r[0].transcript).join('');
-    document.getElementById('sourceText').value=t;
-  };
-}
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:var(--bg); color:var(--text);}
 
-document.getElementById('micBtn').addEventListener('click',()=>{
-  if(!recognition){ alert('Brak wsparcia mikrofonu.'); return; }
-  recognition.start();
-});
+    header{padding:18px 20px; display:flex; gap:12px; align-items:center; border-bottom:1px solid rgba(255,255,255,0.03);}
+    header h1{font-size:16px; margin:0}
+    main{display:flex; gap:18px; padding:18px;}
 
-// Zdjęcia (placeholder)
-document.getElementById('imgBtn').addEventListener('click',()=>{
-  alert('OCR dojdzie później :)');
-});
+    /* Left: translator */
+    .col{flex:1; min-width:300px}
+    .card{background:var(--card); padding:14px; border-radius:12px; box-shadow: 0 6px 18px rgba(0,0,0,0.35);}
 
-// HISTORIA
-function saveHistory(i,o){
-  const list=JSON.parse(localStorage.getItem('fri_history')||'[]');
-  list.unshift({i,o,date:new Date().toLocaleString()});
-  localStorage.setItem('fri_history',JSON.stringify(list));
-}
+    .translator .controls{display:flex; gap:8px; align-items:center}
+    textarea{width:100%; min-height:120px; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:var(--surface); color:var(--text);}
+    button{background:var(--accent); color:white; border:0; padding:8px 12px; border-radius:8px; cursor:pointer}
+    .result{margin-top:12px; padding:12px; background:var(--glass); border-radius:8px}
 
-function renderHistory(){
-  const list=JSON.parse(localStorage.getItem('fri_history')||'[]');
-  const box=document.getElementById('historyList');
-  box.innerHTML='';
-  if(!list.length){ box.innerHTML='<p>Brak historii.</p>'; return; }
-  list.forEach(it=>{
-    const el=document.createElement('div');
-    el.className='history-item';
-    el.innerHTML=
-      `<div style="font-size:13px;font-weight:700">${it.date}</div>
-       <div><b>Wejście:</b> ${it.i}</div>
-       <div><b>Wyjście:</b> ${it.o}</div>`;
-    box.appendChild(el);
-  });
-}
+    /* History column (right) */
+    .history{width:420px}
+    .history .legend-toggle{display:flex; justify-content:space-between; align-items:center}
+    .legend{margin-top:8px; padding:10px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:8px}
+    .legend .swatches{display:flex; gap:8px; flex-wrap:wrap}
 
-// ANALIZA
-function renderAnalysis(t){
-  const out=document.getElementById('analysis');
-  out.innerHTML='';
-  if(!t) return;
-  const words=t.split(/[\s,.;!?]+/).filter(w=>w.length>1);
-  words.forEach(w=>{
-    const cls=detectPOS(w);
-    const el=document.createElement('span');
-    el.className='tag '+cls;
-    el.textContent=w;
-    out.appendChild(el);
-  });
-}
+    .swatch{display:inline-flex; gap:8px; align-items:center; padding:6px 8px; border-radius:8px}
+    .swatch .box{width:18px; height:18px; border-radius:4px}
 
-function detectPOS(w){
-  const lw=w.toLowerCase();
-  if(/[0-9]/.test(lw)) return 'n';
-  if(lw.endsWith('ć')||lw.endsWith('ed')||lw.endsWith('en')||lw.endsWith('ing')) return 'v';
-  if(lw.endsWith('y')||lw.endsWith('a')||lw.endsWith('e')||lw.endsWith('o')) return 'n';
-  return 'a';
-}
+    /* token coloring styles */
+    .tok.noun{color:var(--noun)}
+    .tok.verb{color:var(--verb)}
+    .tok.adj{color:var(--adj)}
+    .tok.adv{color:var(--adv)}
+    .tok.prep{color:var(--prep)}
 
-</script>
+    .tok.det-der{color:var(--der)}
+    .tok.det-die{color:var(--die)}
+    .tok.det-das{color:var(--das)}
 
+    /* combine classes on the same span when needed */
+
+    .history-list{margin-top:12px; display:flex; flex-direction:column; gap:12px;}
+    .history-item{padding:10px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00))}
+
+    .bottom-nav{position:fixed; left:50%; transform:translateX(-50%); bottom:18px; display:flex; gap:8px; backdrop-filter: blur(6px); background:rgba(11,12,13,0.6); padding:8px 12px; border-radius:999px}
+    .nav-btn{padding:8px 10px; border-radius:999px; color:var(--text); background:transparent; border:0; font-size:18px; cursor:pointer}
+    .nav-btn.active{background:rgba(255,255,255,0.03)}
+
+    /* simple responsive */
+    @media (max-width:900px){ main{flex-direction:column} .history{width:100%} }
+
+    /* small helpers */
+    .muted{color:var(--muted); font-size:13px}
+    .hint{font-size:13px; color:var(--muted); margin-top:8px}
+
+    /* Nauka modules (can open many) */
+    .modules{display:flex; flex-direction:column; gap:8px}
+    .module{padding:10px; border-radius:8px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00))}
+    .module .title{display:flex; justify-content:space-between; align-items:center}
+    .module .content{margin-top:8px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tłumacz — projekt (Tryb: tłumacz / historia / nauka)</h1>
+  </header>
+
+  <main>
+    <section class="col translator card">
+      <div class="controls">
+        <div style="flex:1">
+          <label class="muted">Wprowadź tekst (np. DE)</label>
+          <textarea id="inputText" placeholder="Wklej zdanie po niemiecku...">Der Hund läuft schnell in das Haus.</textarea>
+        </div>
+        <div style="width:120px; display:flex; flex-direction:column; gap:8px">
+          <button id="translateBtn">Tłumacz</button>
+          <button id="saveHistoryBtn" style="background:#444;">Zapisz do historii</button>
+        </div>
+      </div>
+
+      <div class="result card" id="translationResult">
+        <strong>Wynik (czysty):</strong>
+        <div id="cleanTranslation" style="margin-top:8px; font-size:16px;">Pies biegnie szybko do domu.</div>
+        <div class="hint">Na stronie tłumacza pokazujemy tylko czyste tłumaczenie — bez kolorów, żeby nie rozpraszało.</div>
+      </div>
+    </section>
+
+    <aside class="history card">
+      <div class="legend-toggle">
+        <div>
+          <strong>Historia & Analiza</strong>
+          <div class="muted">Tu znajdziesz kolorowanie i legendę (tryb analityczny)</div>
+        </div>
+        <div style="text-align:right">
+          <button id="clearHistory" style="background:#6b7280; padding:6px 8px; border-radius:8px; border:0; color:white">Wyczyść</button>
+        </div>
+      </div>
+
+      <div class="legend card" style="margin-top:10px">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+          <div><strong>Legenda (zwijana)</strong></div>
+          <div><button id="toggleLegend" style="background:transparent;border:0;color:var(--muted);cursor:pointer">zwij/rozwiń</button></div>
+        </div>
+
+        <div id="legendContent" style="margin-top:8px">
+          <div class="swatches">
+            <div class="swatch"><div class="box" style="background:var(--der)"></div><div class="muted">der (rodz.)</div></div>
+            <div class="swatch"><div class="box" style="background:var(--die)"></div><div class="muted">die (rodz.)</div></div>
+            <div class="swatch"><div class="box" style="background:var(--das)"></div><div class="muted">das (rodz.)</div></div>
+
+            <div class="swatch"><div class="box" style="background:var(--noun)"></div><div class="muted">Rzeczownik</div></div>
+            <div class="swatch"><div class="box" style="background:var(--verb)"></div><div class="muted">Czasownik</div></div>
+            <div class="swatch"><div class="box" style="background:var(--adj)"></div><div class="muted">Przymiotnik</div></div>
+            <div class="swatch"><div class="box" style="background:var(--adv)"></div><div class="muted">Przysłówek</div></div>
+            <div class="swatch"><div class="box" style="background:var(--prep)"></div><div class="muted">Przyimek</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; display:flex; gap:8px; align-items:center">
+        <div class="muted">Tryb Nauka — otwórz kilka modułów</div>
+        <button id="addModule" style="background:#2d3748;padding:6px 8px;border-radius:8px;border:0;color:white;">Dodaj moduł</button>
+      </div>
+
+      <div class="modules" id="modulesArea" style="margin-top:10px">
+        <!-- dynamic modules appear here -->
+      </div>
+
+      <div class="history-list" id="historyList">
+        <!-- history items appended here -->
+      </div>
+    </aside>
+  </main>
+
+  <div class="bottom-nav" role="navigation" aria-label="Dolna nawigacja">
+    <button class="nav-btn active" data-target="translator">💬</button>
+    <button class="nav-btn" data-target="history">🕘</button>
+    <button class="nav-btn" data-target="nauka">🧠</button>
+    <button class="nav-btn" data-target="settings">⚙️</button>
+  </div>
+
+  <script>
+    /* --- Simple front-end logic ---
+       - Option A colors for determiners (der/die/das)
+       - History stores tokenized items with classes for visual analysis
+       - Translator page shows clean translation (no colors) by default
+       - Legend is collapsible
+       - Multiple "modules" can be added in Nauka and stay open
+       - Basic persistence: localStorage for history and modules
+
+       Note: This is a minimal demo-ready single-file implementation meant
+       to be pasted into an index.html. You can extend tokenization and
+       morphological analysis by integrating a proper NLP library/server.
+    */
+
+    // determiner color map (option A)
+    const detMap = { der: 'det-der', die: 'det-die', das: 'det-das' };
+
+    // simple role guesser (VERY naive): for demo only
+    function guessRole(word){
+      const w = word.toLowerCase().replace(/[.,!?;:"()]/g,'');
+      if(['in','auf','an','mit','für','zu','nach','unter','über','zwischen','ins'].includes(w)) return 'prep';
+      if(['schnell','langsam','gerne','heute'].includes(w)) return 'adv';
+      if(['ist','hat','läuft','geht','kommt','sieht','macht','sagt','läuft','laufen'].includes(w)) return 'verb';
+      if(['schön','groß','klein','schnell'].includes(w)) return 'adj';
+      // fallback: treat capitalized words as nouns (German nouns capitalized)
+      if(word[0] && word[0] === word[0].toUpperCase()) return 'noun';
+      return 'noun';
+    }
+
+    // join determiner with following token into one span
+    function tokenizeAndStyle(sentence){
+      const parts = sentence.split(/\s+/).filter(Boolean);
+      const tokens = [];
+      for(let i=0;i<parts.length;i++){
+        const p = parts[i];
+        const plain = p.replace(/[.,!?;:]+$/,'');
+        const trailing = p.slice(plain.length);
+        const lower = plain.toLowerCase();
+        if(detMap[lower] && parts[i+1]){
+          // combine det + next word
+          const next = parts[i+1];
+          const combined = plain + ' ' + next.replace(/[.,!?;:]+$/,'');
+          const role = guessRole(next);
+          tokens.push({text:combined + (trailing||''), classes: ['tok', role, detMap[lower]]});
+          i++; // skip next
+        } else {
+          const role = guessRole(plain);
+          tokens.push({text: plain + (trailing||''), classes: ['tok', role]});
+        }
+      }
+      return tokens;
+    }
+
+    function renderTokensAsHtml(tokens){
+      return tokens.map(t=>{
+        const cls = t.classes.join(' ');
+        return `<span class="${cls}" style="margin-right:6px">${escapeHtml(t.text)}</span>`;
+      }).join('');
+    }
+
+    function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // History management
+    const historyKey = 'app_history_v1';
+    function loadHistory(){
+      try{ return JSON.parse(localStorage.getItem(historyKey) || '[]'); }catch(e){return []}
+    }
+    function saveHistory(hist){ localStorage.setItem(historyKey, JSON.stringify(hist)); }
+
+    function appendHistoryItem(sentence, translation){
+      const hist = loadHistory();
+      const tokens = tokenizeAndStyle(sentence);
+      hist.unshift({src:sentence, translation, tokens});
+      if(hist.length>100) hist.pop();
+      saveHistory(hist);
+      renderHistory();
+    }
+
+    function renderHistory(){
+      const list = document.getElementById('historyList');
+      list.innerHTML='';
+      const hist = loadHistory();
+      hist.forEach((item, idx)=>{
+        const el = document.createElement('div'); el.className='history-item';
+        el.innerHTML = `<div style="font-size:14px">${renderTokensAsHtml(item.tokens)}</div>
+                        <div class="muted" style="margin-top:6px">${escapeHtml(item.translation)}</div>`;
+        list.appendChild(el);
+      });
+    }
+
+    // basic UI wiring
+    document.getElementById('translateBtn').addEventListener('click', ()=>{
+      // NOTE: Replace this with real translation call if available. For demo, do a fake mapping.
+      const src = document.getElementById('inputText').value.trim();
+      // fake translator: just replace some words
+      const fake = src.replace(/Hund/,'Pies').replace(/läuft/,'biegnie').replace(/schnell/,'szybko').replace(/Haus/,'dom').replace(/in das/,'do');
+      document.getElementById('cleanTranslation').textContent = fake;
+    });
+
+    document.getElementById('saveHistoryBtn').addEventListener('click', ()=>{
+      const src = document.getElementById('inputText').value.trim();
+      const trans = document.getElementById('cleanTranslation').textContent.trim();
+      if(src) appendHistoryItem(src, trans);
+    });
+
+    document.getElementById('clearHistory').addEventListener('click', ()=>{ if(confirm('Czy na pewno wyczyścić historię?')){ localStorage.removeItem(historyKey); renderHistory(); }});
+
+    // legend toggle
+    document.getElementById('toggleLegend').addEventListener('click', ()=>{
+      const c = document.getElementById('legendContent');
+      c.style.display = (c.style.display==='none')? 'block':'none';
+    });
+
+    // modules (Nauka) - allow many open
+    const modulesArea = document.getElementById('modulesArea');
+    let moduleCount = 0;
+    document.getElementById('addModule').addEventListener('click', ()=>{
+      const id = 'mod_' + (++moduleCount);
+      const el = document.createElement('div'); el.className='module card'; el.id = id;
+      el.innerHTML = `<div class="title"><strong>Moduł ${moduleCount}</strong><div><button data-close class="muted">Zamknij</button></div></div><div class="content">Tutaj materiały do nauki — możesz otworzyć kilka jednocześnie. (Przykładowo: fiszki, testy, statystyki)</div>`;
+      modulesArea.appendChild(el);
+      el.querySelector('[data-close]').addEventListener('click', ()=> el.remove());
+    });
+
+    // bottom nav switching (visual only) - shows which area is active
+    const navBtns = document.querySelectorAll('.nav-btn');
+    navBtns.forEach(b=> b.addEventListener('click', ()=>{
+      navBtns.forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const t = b.dataset.target;
+      // simple focus behaviour: scroll to section
+      if(t==='translator') window.scrollTo({top:0, behavior:'smooth'});
+      if(t==='history') { document.querySelector('.history').scrollIntoView({behavior:'smooth'}); }
+      if(t==='nauka') { document.getElementById('addModule').scrollIntoView({behavior:'smooth'}); }
+    }));
+
+    // initial render
+    renderHistory();
+
+    // Seed a sample history item if empty
+    if(loadHistory().length===0){ appendHistoryItem('Der Hund läuft schnell in das Haus.','Pies biegnie szybko do domu.'); }
+
+  </script>
 </body>
 </html>
