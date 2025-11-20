@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Friweika WorkTool — Prototype</title>
 
-<!-- NOWY INDEX: ŁĄCZY TWÓJ LAYOUT + KOLOROWANIE + HISTORIA + RODZAJNIKI -->
-
 <style>
 /* ======== KOLORY FIRMOWE ======== */
 :root{
@@ -18,14 +16,13 @@
 
   --fri-red-dark:#9e1c1c;
 
-  /* ====== KOLORY ANALIZY (NOWE) ====== */
+  /* ANALIZA */
   --det-der:#FF3B30;
   --det-die:#00C851;
   --det-das:#007BFF;
-
   --noun:#007BFF;
   --verb:#00C851;
-  --adj:#FFEB3B;
+  --adj:#FFC107;
   --adv:#AF52DE;
   --prep:#FF9500;
 }
@@ -42,172 +39,86 @@ body{
   overflow-x:hidden;
 }
 
-/* ======== TŁO ======== */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url('assets/friweika-bg.jpg') center/cover no-repeat;
-  filter:blur(12px) brightness(0.9);
-  z-index:-2;
-}
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,0.55);
-  z-index:-1;
-}
+/* TLO */
+body::before{ content:""; position:fixed; inset:0; background:url('assets/friweika-bg.jpg') center/cover no-repeat; filter:blur(12px) brightness(0.9); z-index:-2; }
+body::after{ content:""; position:fixed; inset:0; background:rgba(255,255,255,0.55); z-index:-1; }
 
-/* ======== HEADER ======== */
-header{
-  background:var(--fri-red);
-  padding:10px 16px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-header img{ height:60px; }
-header h1{
-  color:white;
-  margin:0;
-  font-size:22px;
-  font-weight:900;
-}
+/* HEADER */
+header{ background:var(--fri-red); padding:10px 16px; display:flex; align-items:center; gap:14px; position:relative }
+header img{ height:60px }
+header h1{ color:white; margin:0; font-size:22px; font-weight:900 }
+header .menu-btn{ position:absolute; right:18px; top:12px; background:transparent; border:0; color:white; font-size:20px; cursor:pointer }
 
-/* ======== STRUKTURA ======== */
-.container{
-  max-width:900px;
-  margin:18px auto;
-  padding:16px;
-}
-.card{
-  background:#fff;
-  padding:16px;
-  border-radius:14px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
-}
+.container{ max-width:980px; margin:18px auto; padding:16px; }
+.card{ background:#fff; padding:16px; border-radius:14px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
 
-/* ======== FORM ======== */
-label{
-  display:block;
-  margin:.6rem 0;
-  color:var(--fri-red);
-  font-weight:700;
-}
-select,textarea,input{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #d9d9d9;
-  font-size:15px;
-}
-textarea{ min-height:110px; }
+label{ display:block; margin:.6rem 0; color:var(--fri-red); font-weight:700 }
+select,textarea,input{ width:100%; padding:12px; border-radius:8px; border:1px solid #d9d9d9; font-size:15px }
+textarea{ min-height:110px }
 
-/* ======== BUTTONY ======== */
-.controls{
-  display:flex;
-  gap:12px;
-  margin-top:14px;
-}
-.btn{
-  padding:12px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  font-weight:700;
-}
-.btn-primary{
-  background:var(--fri-red);
-  color:#fff;
-}
-.btn-ghost{
-  background:#f9f9f9;
-  border:1px solid #ccc;
-}
+.controls{ display:flex; gap:12px; margin-top:14px }
+.btn{ padding:12px; border-radius:8px; border:none; cursor:pointer; font-weight:700 }
+.btn-primary{ background:var(--fri-red); color:#fff }
+.btn-ghost{ background:#f9f9f9; border:1px solid #ccc }
 
-/* ===== NAWIGACJA ===== */
-.nav{
-  position:fixed;
-  left:0; right:0;
-  bottom:0;
-  height:72px;
-  background:#fff;
-  border-top:4px solid var(--fri-yellow);
-  display:flex;
-  z-index:20;
-}
-.nav .item{
-  flex:1;
-  text-align:center;
-  padding:8px;
-  color:#666;
-  cursor:pointer;
-  font-size:14px;
-}
-.nav .item.active{
-  color:var(--fri-red);
-  font-weight:700;
-}
+.nav{ position:fixed; left:0; right:0; bottom:0; height:72px; background:#fff; border-top:4px solid var(--fri-yellow); display:flex; z-index:20 }
+.nav .item{ flex:1; text-align:center; padding:8px; color:#666; cursor:pointer; font-size:14px }
+.nav .item.active{ color:var(--fri-red); font-weight:700 }
 
-/* ===== HISTORIA ===== */
-.history-item{
-  background:#fff;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-.small{ font-size:13px; color:#666; margin-top:8px; }
+/* Legend / History */
+.legend{ margin-top:12px; padding:10px; background:#fff8dd; border-radius:10px; font-size:14px }
+.legend-row{ display:flex; gap:10px; align-items:center }
+.color-box{ width:16px; height:16px; border-radius:4px }
 
-/* ===== LEGENDA (NOWA) ===== */
-.legend{
-  margin-top:12px;
-  padding:10px;
-  background:#fff8dd;
-  border-radius:10px;
-  font-size:14px;
-}
-.legend-row{ display:flex; gap:10px; align-items:center; }
-.color-box{
-  width:16px;
-  height:16px;
-  border-radius:4px;
-}
+/* tokens */
+.tok{ font-weight:700; margin-right:6px }
+.det-der{ color:var(--det-der) }
+.det-die{ color:var(--det-die) }
+.det-das{ color:var(--det-das) }
+.noun{ color:var(--noun) }
+.verb{ color:var(--verb) }
+.adj{ color:var(--adj) }
+.adv{ color:var(--adv) }
+.prep{ color:var(--prep) }
 
-/* ===== TOKENS ===== */
-.tok{ font-weight:700; }
-.det-der{ color:var(--det-der); }
-.det-die{ color:var(--det-die); }
-.det-das{ color:var(--det-das); }
+/* dark mode for translator card */
+.translator-dark{ background:#141414 !important; color:#e6eef3 !important }
+.translator-dark textarea{ background:#0f1113; color:#e6eef3 }
 
-.noun{ color:var(--noun); }
-.verb{ color:var(--verb); }
-.adj{ color:var(--adj); }
-.adv{ color:var(--adv); }
-.prep{ color:var(--prep); }
+/* hide colors class */
+.no-colors .tok{ color:inherit !important }
 
-/* Dla history */
-.hist-colored{ margin-top:8px; }
+/* Nauka modules */
+.modules{ display:flex; flex-direction:column; gap:8px; margin-top:10px }
+.module{ padding:10px; border-radius:8px; background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.00)) }
+.module .title{ display:flex; justify-content:space-between; align-items:center }
 
+.footer{ background:var(--fri-red-dark); padding:18px 12px 26px; margin-top:90px; border-top:4px solid var(--fri-yellow); text-align:center; color:white }
+.footer img{ width:160px; display:block; margin:0 auto 6px; opacity:0.95 }
+.footer .note{ font-size:14px; opacity:0.9 }
+
+@media (max-width:900px){ .container{ padding:12px } }
 </style>
 </head>
-
 <body>
 
 <header>
-  <img src="assets/friweika-potato.png" />
+  <img src="assets/friweika-potato.png" alt="logo">
   <h1>Friweika WorkTool — Prototype</h1>
+  <button class="menu-btn" id="headerMenuBtn">⚙️</button>
 </header>
 
 <div class="container">
 
+  <!-- TRANSLATOR CARD -->
   <div class="card" id="translateCard">
-
     <label>Język źródłowy (source):</label>
     <select id="langFrom">
       <option value="pl">Polski</option>
       <option value="de">Niemiecki</option>
       <option value="en">Angielski</option>
+      <option value="uk">Ukraiński</option>
+      <option value="ar">Arabski</option>
     </select>
 
     <label>Język docelowy (target):</label>
@@ -215,6 +126,8 @@ textarea{ min-height:110px; }
       <option value="de">Niemiecki</option>
       <option value="pl">Polski</option>
       <option value="en">Angielski</option>
+      <option value="uk">Ukraiński</option>
+      <option value="ar">Arabski</option>
     </select>
 
     <label>Tekst do tłumaczenia:</label>
@@ -228,16 +141,21 @@ textarea{ min-height:110px; }
     </div>
 
     <label style="margin-top:14px;">Tłumaczenie:</label>
-    <textarea id="translatedText" readonly></textarea>
+    <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
     <div class="small" id="debugNote"></div>
-
   </div>
 
   <div style="height:14px"></div>
 
+  <!-- HISTORY + ANALYSIS -->
   <div class="card" id="historyCard">
     <h3>Historia tłumaczeń + analiza</h3>
-    <div class="legend">
+    <div style="display:flex; justify-content:space-between; align-items:center">
+      <div class="muted small">Legenda (zwijana)</div>
+      <div><button id="toggleLegendBtn" class="btn-ghost" style="padding:6px 10px">zwij/rozwiń</button></div>
+    </div>
+
+    <div id="legendArea" class="legend" style="margin-top:8px">
       <div class="legend-row"><div class="color-box" style="background:var(--det-der)"></div> der (rodzajnik)</div>
       <div class="legend-row"><div class="color-box" style="background:var(--det-die)"></div> die (rodzajnik)</div>
       <div class="legend-row"><div class="color-box" style="background:var(--det-das)"></div> das (rodzajnik)</div>
@@ -249,14 +167,45 @@ textarea{ min-height:110px; }
     </div>
 
     <div id="historyList" style="margin-top:14px"></div>
+    <div style="margin-top:8px"><button id="clearHistoryBtn" class="btn-ghost">Wyczyść historię</button></div>
+  </div>
+
+  <div style="height:14px"></div>
+
+  <!-- NAUKA -->
+  <div class="card" id="learnCard" style="display:none">
+    <h3>Nauka</h3>
+    <div class="modules" id="modulesArea">
+      <!-- modules appended here -->
+    </div>
+    <div style="margin-top:10px"><button id="addModuleBtn" class="btn-ghost">Dodaj moduł</button></div>
   </div>
 
   <div style="height:80px"></div>
+</div>
 
+<!-- SETTINGS PANEL (opened from header menu) -->
+<div id="settingsPanel" class="card" style="display:none; position:fixed; right:18px; top:90px; width:320px; z-index:50">
+  <h3>Ustawienia</h3>
+  <label style="margin-top:8px">Tryb ciemny (panel tłumacza):</label>
+  <input type="checkbox" id="toggleDarkMode" />
+
+  <label style="margin-top:12px">Kolorowanie w Historii:</label>
+  <input type="checkbox" id="toggleColoring" checked />
+
+  <div style="margin-top:12px"><button id="closeSettings" class="btn-ghost">Zamknij</button></div>
+</div>
+
+<!-- INFO PANEL -->
+<div id="infoPanel" class="card" style="display:none; position:fixed; right:18px; top:90px; width:320px; z-index:50">
+  <h3>Informacje o aplikacji</h3>
+  <p>Friweika WorkTool — wersja testowa.</p>
+  <p>Wersja: 0.9 (robocza)</p>
+  <div style="margin-top:12px"><button id="closeInfo" class="btn-ghost">Zamknij</button></div>
 </div>
 
 <div class="footer">
-  <img src="assets/friweika-logo.png" />
+  <img src="assets/friweika-logo.png" alt="logo">
   <div class="note">Wersja testowa Friweika — Prototype</div>
 </div>
 
@@ -267,6 +216,227 @@ textarea{ min-height:110px; }
 </div>
 
 <script>
-/* ======== NAWIGACJA ======== */
+// --- helpers ---
+const el = id=>document.getElementById(id);
+const escapeHtml = s=> String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// NAV
 const tabBtns=document.querySelectorAll('.nav .item');
 const translateCard=document.getElementById('translateCard');
+const historyCard=document.getElementById('historyCard');
+const learnCard=document.getElementById('learnCard');
+
+tabBtns.forEach(it=>it.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  it.classList.add('active');
+  const tab=it.dataset.tab;
+  translateCard.style.display = tab==='translate'?'block':'none';
+  historyCard.style.display = tab==='history'?'block':'none';
+  learnCard.style.display = tab==='learn'?'block':'none';
+  if(tab==='history') renderHistory();
+}));
+
+// Header menu
+const headerMenuBtn = el('headerMenuBtn');
+const settingsPanel = el('settingsPanel');
+const infoPanel = el('infoPanel');
+headerMenuBtn.addEventListener('click', ()=>{
+  // toggle simple menu
+  if(settingsPanel.style.display==='none' || settingsPanel.style.display===''){
+    settingsPanel.style.display='block'; infoPanel.style.display='none';
+  } else { settingsPanel.style.display='none'; }
+});
+
+// close info/settings
+el('closeSettings').addEventListener('click', ()=> settingsPanel.style.display='none');
+el('closeInfo').addEventListener('click', ()=> infoPanel.style.display='none');
+
+// allow clicking info area from menu (right-click simulation via longpress?) -> add small icon opening info
+// small quick toggle on header menu (shift+click opens info)
+headerMenuBtn.addEventListener('auxclick', ()=>{ infoPanel.style.display = infoPanel.style.display==='block'?'none':'block'; settingsPanel.style.display='none'; });
+
+// TRANSLATION
+const translateBtn = el('translateBtn');
+translateBtn.addEventListener('click', async ()=>{
+  const q=el('sourceText').value.trim();
+  const source=el('langFrom').value;
+  const target=el('langTo').value;
+  const out=el('translatedText');
+  if(!q){ alert('Wpisz tekst.'); return; }
+  out.value='Tłumaczę...'; el('debugNote').textContent='';
+
+  // try real API
+  try{
+    const res = await fetch('/api/translate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({q,source,target}) });
+    if(res.ok){
+      const j = await res.json();
+      if(j && j.translation){ out.value = j.translation; saveHistory(q,j.translation); renderAnalysis(j.translation); return; }
+    }
+    // fallback if API returns non-ok
+  }catch(e){ console.warn('API error', e); }
+
+  // fallback pseudo-translator (fast local) — basic word replacements + passthrough
+  const fallback = pseudoTranslate(q, source, target);
+  out.value = fallback;
+  saveHistory(q,fallback);
+  renderAnalysis(fallback);
+});
+
+function pseudoTranslate(text, source, target){
+  // VERY simple replacements for demo — extend as needed
+  const map = {
+    'Der Hund läuft schnell in das Haus.':'Pies biegnie szybko do domu.',
+    'Hej, czy możesz przyjść i mi pomóc?':'Hej, kannst du kommen und mir helfen?'
+  };
+  if(map[text]) return map[text];
+  // simple rule: if target==pl and source==de, swap some words
+  if(source==='de' && target==='pl'){
+    return text.replace(/Hund/gi,'Pies').replace(/Haus/gi,'dom').replace(/läuft/gi,'biegnie').replace(/schnell/gi,'szybko');
+  }
+  // otherwise return original as fallback
+  return text;
+}
+
+// Google quick open
+el('googleBtn').addEventListener('click', ()=>{
+  const txt=encodeURIComponent(el('sourceText').value);
+  window.open('https://translate.google.com/?sl=auto&tl='+el('langTo').value+'&text='+txt,'_blank');
+});
+
+// Microphone
+let recognition;
+if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'pl-PL'; recognition.interimResults = false;
+  recognition.onresult = e=>{ const t=[...e.results].map(r=>r[0].transcript).join(''); el('sourceText').value = t; };
+}
+el('micBtn').addEventListener('click', ()=>{ if(!recognition){ alert('Brak wsparcia mikrofonu.'); return; } recognition.start(); });
+
+// Image placeholder
+el('imgBtn').addEventListener('click', ()=> alert('OCR + upload dodamy później :)'));
+
+// HISTORY
+function saveHistory(i,o){
+  const list = JSON.parse(localStorage.getItem('fri_history')||'[]');
+  // tokenized analysis will be stored lazily when rendering
+  list.unshift({i,o,date:new Date().toLocaleString()});
+  localStorage.setItem('fri_history', JSON.stringify(list));
+}
+
+function clearHistory(){ localStorage.removeItem('fri_history'); renderHistory(); }
+el('clearHistoryBtn').addEventListener('click', ()=>{ if(confirm('Czy na pewno wyczyścić historię?')) clearHistory(); });
+
+function renderHistory(){
+  const list = JSON.parse(localStorage.getItem('fri_history')||'[]');
+  const box = el('historyList'); box.innerHTML='';
+  if(!list.length){ box.innerHTML='<p>Brak historii.</p>'; return; }
+  list.forEach(it=>{
+    const item = document.createElement('div'); item.className='history-item';
+    // build colored tokens for analysis
+    const tokens = tokenizeAndStyle(it.i);
+    const coloredHtml = tokens.map(t=>`<span class="tok ${t.classes.join(' ')}">${escapeHtml(t.text)}</span>`).join(' ');
+    item.innerHTML = `<div style="font-size:13px;font-weight:700">${it.date}</div>
+      <div style="margin-top:6px"><b>Wejście:</b> ${escapeHtml(it.i)}</div>
+      <div style="margin-top:6px"><b>Wyjście (czyste):</b> ${escapeHtml(it.o)}</div>
+      <div class="hist-colored" style="margin-top:8px">${coloredHtml}</div>`;
+    box.appendChild(item);
+  });
+  // apply coloring toggle
+  if(!el('toggleColoring').checked) box.classList.add('no-colors'); else box.classList.remove('no-colors');
+}
+
+// ANALYSIS / TOKENIZATION
+const detMap = { der:'det-der', die:'det-die', das:'det-das' };
+function tokenizeAndStyle(sentence){
+  // very simple german-aware tokenizer: keep punctuation
+  const parts = sentence.split(/\s+/).filter(Boolean);
+  const tokens = [];
+  for(let i=0;i<parts.length;i++){
+    const p = parts[i];
+    const plain = p.replace(/[.,!?;:"()]+$/,'');
+    const trailing = p.slice(plain.length);
+    const lower = plain.toLowerCase();
+    if(detMap[lower] && parts[i+1]){
+      const next = parts[i+1];
+      const nextPlain = next.replace(/[.,!?;:"()]+$/,'');
+      const combined = plain + ' ' + nextPlain;
+      // role guess based on next word capitalization
+      const role = guessRole(nextPlain);
+      tokens.push({ text: combined + (trailing||''), classes: [detMap[lower], role] });
+      i++; // skip next
+    } else {
+      const role = guessRole(plain);
+      tokens.push({ text: plain + (trailing||''), classes: [role] });
+    }
+  }
+  return tokens;
+}
+
+function guessRole(word){
+  const w = word.replace(/[.,!?;:\"()]/g,'');
+  const lw = w.toLowerCase();
+  // prepositions
+  if(['in','im','ins','auf','an','mit','für','zu','nach','unter','über','zwischen','bei'].includes(lw)) return 'prep';
+  // adverbs common
+  if(['schnell','langsam','gerne','heute','bald','noch'].includes(lw)) return 'adv';
+  // verbs (naive)
+  if(['ist','hat','läuft','geht','kommt','sieht','macht','sagt','läuft','laufen','biegt','arbeitet','muss','kann'].includes(lw)) return 'verb';
+  // German nouns are capitalized — treat capitalized as noun
+  if(word[0] && word[0] === word[0].toUpperCase()) return 'noun';
+  // fallback
+  return 'adj';
+}
+
+// RENDER ANALYSIS FOR TRANSLATED TEXT (shows tags in analysis area)
+function renderAnalysis(t){
+  const out = el('analysis'); out.innerHTML='';
+  if(!t) return;
+  const words = t.split(/[,.;!?\s]+/).filter(w=>w.length>0);
+  words.forEach(w=>{
+    const cls = detectPOS(w);
+    const sp = document.createElement('span'); sp.className='tag '+cls; sp.textContent = w; out.appendChild(sp);
+  });
+}
+
+function detectPOS(w){ const lw=w.toLowerCase(); if(/[0-9]/.test(lw)) return 'n'; if(lw.endsWith('ć')||lw.endsWith('ed')||lw.endsWith('en')||lw.endsWith('ing')) return 'v'; if(lw.endsWith('y')||lw.endsWith('a')||lw.endsWith('e')||lw.endsWith('o')) return 'n'; return 'a'; }
+
+// Legend toggle
+el('toggleLegendBtn').addEventListener('click', ()=>{
+  const la = el('legendArea'); la.style.display = (la.style.display==='none')? 'block':'none';
+});
+
+// Nauka modules
+let moduleCount=0; el('addModuleBtn').addEventListener('click', ()=>{
+  const id = 'mod_'+(++moduleCount);
+  const m = document.createElement('div'); m.className='module card'; m.id=id;
+  m.innerHTML = `<div class="title"><strong>Moduł ${moduleCount}</strong><div><button data-close class="btn-ghost">Zamknij</button></div></div><div class="content">Przykładowe ćwiczenia i fiszki. Rozwijamy później.</div>`;
+  el('modulesArea').appendChild(m);
+  m.querySelector('[data-close]').addEventListener('click', ()=> m.remove());
+});
+
+// SETTINGS
+const darkToggle = el('toggleDarkMode');
+const colorToggle = el('toggleColoring');
+
+darkToggle.addEventListener('change', ()=>{
+  if(darkToggle.checked) translateCard.classList.add('translator-dark'); else translateCard.classList.remove('translator-dark');
+});
+colorToggle.addEventListener('change', ()=> renderHistory());
+
+// initial
+if(!localStorage.getItem('fri_history')){
+  // seed example
+  saveHistory('Der Hund läuft schnell in das Haus.','Pies biegnie szybko do domu.');
+}
+renderHistory();
+
+// expose clearHistory for button
+window.clearHistory = clearHistory;
+
+// keyboard shortcut: Shift+S opens settings
+document.addEventListener('keydown', (e)=>{ if(e.shiftKey && e.key.toLowerCase()==='s'){ settingsPanel.style.display = settingsPanel.style.display==='block'?'none':'block'; infoPanel.style.display='none'; } });
+
+</script>
+</body>
+</html>
