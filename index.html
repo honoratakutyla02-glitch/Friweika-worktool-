@@ -3,25 +3,22 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Friweika WorkTool — Prototype (Split)</title>
+<title>Friweika WorkTool 2.0</title>
 
-<!-- main CSS -->
-<link rel="stylesheet" href="styles.css">
-
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
+<header class="header">
   <img class="logo" src="assets/friweika-potato.png" alt="logo">
-  <h1>Friweika WorkTool — Prototype</h1>
-  <button id="menuBtn" class="menu-btn" title="Ustawienia">⚙️</button>
-</div>
-<div class="header-sep" aria-hidden="true"></div>
+  <h1>Friweika WorkTool</h1>
+  <button id="menuBtn" class="menu-btn">⚙️</button>
+</header>
+<div class="header-sep"></div>
 
 <div class="container">
 
-  <!-- TRANSLATOR CARD -->
+  <!-- TRANSLATOR -->
   <div class="card" id="translateCard">
     <label>Język źródłowy:</label>
     <select id="langFrom">
@@ -46,143 +43,72 @@
 
     <div class="controls">
       <button id="translateBtn" class="btn btn-primary">Tłumacz</button>
-      <button id="googleBtn" class="btn btn-ghost" title="Otwórz w Google Translate">🌐</button>
-      <button id="micBtn" class="btn btn-ghost" title="Mikrofon (jeśli wspierany)">🎤</button>
-      <button id="imgBtn" class="btn btn-ghost" title="OCR (później)">📷</button>
-
-      <div style="flex:1"></div>
-
-      <!-- quick switches -->
-      <label class="small" style="align-self:center;margin:0 6px 0 0">Dark: <input type="checkbox" id="quickDark"></label>
-      <label class="small" style="align-self:center">Kolory: <input type="checkbox" id="quickColor" checked></label>
+      <button id="googleBtn" class="btn btn-ghost">🌐</button>
+      <button id="micBtn" class="btn btn-ghost">🎤</button>
+      <button id="imgBtn" class="btn btn-ghost">📷</button>
     </div>
 
-    <label style="margin-top:14px">Tłumaczenie:</label>
-    <textarea id="translatedText" readonly placeholder="Tutaj pojawi się wynik..."></textarea>
-    <div id="debugNote" class="small" style="margin-top:6px;color:var(--muted)"></div>
+    <label style="margin-top:12px">Tłumaczenie:</label>
+    <textarea id="translatedText" readonly></textarea>
   </div>
 
-  <!-- HISTORY CARD -->
-  <div class="card" id="historyCard" style="margin-top:18px; display:none;">
+  <!-- HISTORY -->
+  <div class="card" id="historyCard" style="display:none;margin-top:18px;">
     <h3>Historia tłumaczeń + analiza</h3>
 
-    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;">
-      <input id="histSearch" type="text" placeholder="Szukaj w historii..." style="padding:8px;border-radius:8px;border:1px solid #e2e2e2;flex:1" />
-      <select id="histLang" style="padding:8px;border-radius:8px;border:1px solid #e2e2e2">
-        <option value="all">Wszystkie</option>
-        <option value="pl">PL</option>
-        <option value="de">DE</option>
-        <option value="en">EN</option>
-        <option value="uk">UK</option>
-        <option value="ar">AR</option>
-      </select>
-      <button id="histFilterBtn" class="btn-ghost">Filtruj</button>
-      <button id="legendToggle" class="btn-ghost">Legenda</button>
-      <button id="clearHistoryBtn" class="btn-ghost" style="margin-left:auto">Wyczyść historię</button>
+    <button id="legendToggle" class="btn-ghost" style="margin-top:6px">Legenda</button>
+
+    <div id="legendArea" class="legend" style="display:none;margin-top:10px;">
+      <div class="legend-row"><div class="color-box der"></div> der</div>
+      <div class="legend-row"><div class="color-box die"></div> die</div>
+      <div class="legend-row"><div class="color-box das"></div> das</div>
+      <div class="legend-row"><div class="color-box noun"></div> Rzeczownik</div>
+      <div class="legend-row"><div class="color-box verb"></div> Czasownik</div>
+      <div class="legend-row"><div class="color-box adj"></div> Przymiotnik</div>
+      <div class="legend-row"><div class="color-box adv"></div> Przysłówek</div>
+      <div class="legend-row"><div class="color-box prep"></div> Przyimek</div>
     </div>
 
-    <div id="legendArea" class="legend" style="margin-top:12px; display:none;">
-      <div class="legend-row"><div class="color-box" style="background:var(--det-der)"></div> der (rodzajnik)</div>
-      <div class="legend-row"><div class="color-box" style="background:var(--det-die)"></div> die (rodzajnik)</div>
-      <div class="legend-row"><div class="color-box" style="background:var(--det-das)"></div> das (rodzajnik)</div>
-      <div class="legend-row"><div class="color-box" style="background:var(--noun)"></div> Rzeczownik</div>
-      <div class="legend-row"><div class="color-box" style="background:var(--verb)"></div> Czasownik</div>
-      <div class="legend-row"><div class="color-box" style="background:var(--adj)"></div> Przymiotnik</div>
-      <div class="legend-row"><div class="color-box" style="background:var(--adv)"></div> Przysłówek</div>
-      <div class="legend-row"><div class="color-box" style="background:var(--prep)"></div> Przyimek</div>
-    </div>
-
-    <div id="historyList" style="margin-top:14px; max-height:480px; overflow:auto;"></div>
-
+    <div id="historyList" style="margin-top:14px"></div>
+    <button id="clearHistoryBtn" class="btn-ghost" style="margin-top:10px;">Wyczyść historię</button>
   </div>
 
-  <!-- NAUKA CARD -->
-  <div class="card" id="learnCard" style="margin-top:18px; display:none;">
-    <h3>Nauka — moduły</h3>
-    <div class="modules" id="modulesArea">
-      <!-- Module: Rodzajniki -->
-      <div class="module card" id="module-articles">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Rodzajniki — ćwiczenia i fiszki</strong>
-          <div style="display:flex;gap:8px">
-            <button id="shuffleArticles" class="btn-ghost">Nowe</button>
-            <button id="toggleArticlesList" class="btn-ghost">Pokaż listę</button>
-          </div>
-        </div>
+  <!-- LEARN -->
+  <div class="card" id="learnCard" style="display:none;margin-top:18px;">
+    <h3>Nauka</h3>
 
-        <div style="margin-top:10px; display:flex; gap:12px; flex-wrap:wrap;">
-          <div id="articleQuiz" style="display:flex; gap:10px; flex-wrap:wrap"></div>
-          <div style="min-width:220px">
-            <div style="margin-top:10px">
-              <div style="font-weight:700">Fiszki</div>
-              <div style="display:flex;gap:8px; margin-top:8px; flex-wrap:wrap" id="flashcardArea"></div>
-            </div>
-          </div>
-        </div>
+    <div id="flashcardsArea" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:12px"></div>
 
-      </div>
-
-      <!-- Module: Irregular -->
-      <div class="module card">
-        <strong>Czasowniki nieregularne (ściąga)</strong>
-        <div style="margin-top:10px" id="irregularTableArea"></div>
-      </div>
-
-      <!-- Module: Work phrases -->
-      <div class="module card">
-        <strong>Zdania robocze</strong>
-        <div style="margin-top:8px" id="workPhrasesArea"></div>
-      </div>
-
-    </div>
-
-    <div style="margin-top:12px"><button id="addModuleBtn" class="btn-ghost">Dodaj moduł</button></div>
+    <h3 style="margin-top:20px;">Czasowniki nieregularne</h3>
+    <div id="irrArea"></div>
   </div>
 
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-  <img src="assets/friweika-logo.png" alt="Friweika logo" />
-  <div class="note">Wersja testowa Friweika — Prototype</div>
-</div>
+<footer class="footer">
+  <img src="assets/friweika-logo.png" />
+  <div class="note">Wersja testowa Friweika — 2.0</div>
+</footer>
 
-<!-- NAV -->
 <div class="nav">
   <div class="item active" data-tab="translate">💬 Tłumacz</div>
   <div class="item" data-tab="history">🕘 Historia</div>
   <div class="item" data-tab="learn">🧠 Nauka</div>
 </div>
 
-<!-- SETTINGS PANEL -->
-<div id="settingsPanel" class="card" style="position:fixed; right:16px; top:92px; width:320px; display:none; z-index:999;">
+<!-- SETTINGS -->
+<div id="settingsPanel" class="settings-panel card">
   <h3>Ustawienia</h3>
 
-  <label>Język aplikacji (UI):</label>
-  <select id="appLang" style="width:100%;padding:8px;border-radius:6px;border:1px solid #e2e2e2;margin-bottom:8px">
-    <option value="pl">Polski</option>
-    <option value="de">Deutsch</option>
-    <option value="en">English</option>
-    <option value="uk">Українська</option>
-    <option value="ar">العربية</option>
-  </select>
+  <label>Tryb ciemny:</label>
+  <input type="checkbox" id="toggleDarkMode">
 
-  <label>Tryb ciemny (globalnie):</label>
-  <input type="checkbox" id="toggleDarkMode" />
+  <label style="margin-top:10px">Kolorowanie tekstu:</label>
+  <input type="checkbox" id="toggleColoring" checked>
 
-  <label style="margin-top:10px">Kolorowanie w historii:</label>
-  <input type="checkbox" id="toggleColoring" checked />
-
-  <label style="margin-top:10px">Pokaż daty w historii:</label>
-  <input type="checkbox" id="toggleDates" checked />
-
-  <div style="margin-top:12px; display:flex; gap:8px;">
-    <button id="saveSettings" class="btn-ghost">Zapisz</button>
-    <button id="closeSettings" class="btn-ghost">Zamknij</button>
-  </div>
+  <button id="closeSettings" class="btn-ghost" style="margin-top:14px">Zamknij</button>
 </div>
 
-<!-- main JS -->
 <script src="app.js"></script>
 </body>
-          </html>
+</html>
