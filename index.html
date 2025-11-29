@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Friweika WorkTool — Prototype (Final)</title>
+<title>Friweika WorkTool — Prototype</title>
 <style>
 /* ================= PALETA I RESET ================= */
 :root{
@@ -23,13 +23,16 @@
   --det-das:#007BFF;
 
   /* części mowy (kontrastowe i różne od rodzajników) */
-  --noun:#007B5A;   /* teal */
-  --verb:#00A300;   /* green */
-  --adj:#FFC107;    /* yellow */
-  --adv:#FF6EB4;    /* pink */
-  --prep:#FF9500;   /* orange */
+  --noun:#007B5A;
+  --verb:#00A300;
+  --adj:#FFC107;
+  --adv:#FF6EB4;
+  --prep:#FF9500;
 
   --card-bg:#ffffff;
+  --select-bg:#ffffff;
+  --select-bg-dark:#1a1a1a;
+  --select-color-dark:#e6e6e6;
 }
 
 /* reset */
@@ -60,7 +63,7 @@ body::after{
   z-index:-1;
 }
 
-/* DARK MODE - global (nakłada ciemną warstwę i przyciemnia UI) */
+/* DARK MODE - global */
 body.dark-mode{
   background: #0b0b0b;
   color: #e6e6e6;
@@ -113,11 +116,14 @@ select,textarea,input[type="text"]{
   font-size:15px; background:transparent;
   color:inherit;
 }
+select{ background:var(--select-bg) }
+body.dark-mode select{ background:var(--select-bg-dark); color:var(--select-color-dark) }
 textarea{ min-height:120px; resize:vertical }
 .controls{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap }
 .btn{ padding:10px 14px; border-radius:8px; border:0; cursor:pointer; font-weight:700 }
 .btn-primary{ background:var(--fri-red); color:white }
 .btn-ghost{ background:#f6f6f6; border:1px solid #e2e2e2; color:#333 }
+body.dark-mode .btn-ghost{ background:#111; color:#ddd; border-color:#333 }
 
 /* NAV bottom */
 .nav{
@@ -154,11 +160,6 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
 
 /* NO COLORS (toggle off colors) */
 .no-colors .tok{ color:inherit; background:transparent; }
-
-/* TRANSLATOR DARK - local translator controls overridden by global dark */
-.translator-dark select, .translator-dark textarea{
-  background:transparent !important; color:inherit !important; border-color:rgba(255,255,255,0.06) !important;
-}
 
 /* MODULES - Nauka & flashcard */
 .modules{ display:flex; flex-direction:column; gap:10px; margin-top:8px }
@@ -346,6 +347,15 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
   <label style="margin-top:10px">Pokaż daty w historii:</label>
   <input type="checkbox" id="toggleDates" checked />
 
+  <label style="margin-top:10px">Język aplikacji (UI):</label>
+  <select id="appLang">
+    <option value="pl">Polski</option>
+    <option value="de">Deutsch</option>
+    <option value="en">English</option>
+    <option value="uk">Українська</option>
+    <option value="ar">العربية</option>
+  </select>
+
   <div style="margin-top:12px; display:flex; gap:8px;">
     <button id="saveSettings" class="btn-ghost">Zapisz</button>
     <button id="closeSettings" class="btn-ghost">Zamknij</button>
@@ -353,16 +363,14 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
 </div>
 
 <script>
-/* Final JS: naprawy legendy, global dark, sync quick toggles, legend toggle, clear history button,
-   poprawiony tokenizer + render, seed fiszek i tablica czasowników, work phrases.
-*/
+/* Final JS — tryb 1: historia = Wejście + Wyjście + analiza tylko dla WYJŚCIA=de */
 
-/* ---------- helpers ---------- */
+/* helpers */
 const $ = id => document.getElementById(id);
 const qsa = sel => document.querySelectorAll(sel);
 const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-/* ---------- NAV ---------- */
+/* NAV */
 const tabs = qsa('.nav .item');
 const translateCard = $('translateCard');
 const historyCard = $('historyCard');
@@ -380,40 +388,43 @@ tabs.forEach(t=>{
   });
 });
 
-/* ---------- SETTINGS ---------- */
+/* SETTINGS */
 const menuBtn = $('menuBtn');
 const settingsPanel = $('settingsPanel');
 menuBtn.addEventListener('click', ()=> settingsPanel.style.display = settingsPanel.style.display==='block' ? 'none' : 'block' );
 $('closeSettings').addEventListener('click', ()=> settingsPanel.style.display='none' );
 
-/* read saved */
+/* load saved settings */
 const savedDark = localStorage.getItem('fw_dark') === '1';
 const savedColor = localStorage.getItem('fw_coloring') !== '0';
 const savedDates = localStorage.getItem('fw_dates') !== '0';
+const savedAppLang = localStorage.getItem('fw_appLang') || 'pl';
 
 $('toggleDarkMode').checked = savedDark;
 $('toggleColoring').checked = savedColor;
 $('toggleDates').checked = savedDates;
+$('appLang').value = savedAppLang;
 
-/* sync quick toggles */
+/* quick toggles */
 $('quickDark').checked = savedDark;
 $('quickColor').checked = savedColor;
 
-/* apply initial */
+/* apply */
 if(savedDark) enableDarkMode(true);
 if(!savedColor) toggleColoring(false);
 
-/* save */
+/* save settings */
 $('saveSettings').addEventListener('click', ()=>{
   localStorage.setItem('fw_dark', $('toggleDarkMode').checked ? '1':'0');
   localStorage.setItem('fw_coloring', $('toggleColoring').checked ? '1':'0');
   localStorage.setItem('fw_dates', $('toggleDates').checked ? '1':'0');
+  localStorage.setItem('fw_appLang', $('appLang').value);
   alert('Zapisano ustawienia.');
   settingsPanel.style.display='none';
   renderHistory();
 });
 
-/* quick toggles mirror */
+/* mirror quick toggles */
 $('quickDark').addEventListener('change', e => {
   $('toggleDarkMode').checked = e.target.checked;
   enableDarkMode(e.target.checked);
@@ -423,35 +434,24 @@ $('quickColor').addEventListener('change', e => {
   toggleColoring(e.target.checked);
 });
 
-/* ---------- DARK MODE ---------- */
+/* DARK MODE */
 function enableDarkMode(enable){
-  if(enable){
-    document.body.classList.add('dark-mode');
-    $('quickDark').checked = true;
-  } else {
-    document.body.classList.remove('dark-mode');
-    $('quickDark').checked = false;
-  }
+  if(enable){ document.body.classList.add('dark-mode'); $('quickDark').checked = true; }
+  else { document.body.classList.remove('dark-mode'); $('quickDark').checked = false; }
 }
-$('toggleDarkMode').addEventListener('change', ()=> {
-  enableDarkMode($('toggleDarkMode').checked);
-});
+$('toggleDarkMode').addEventListener('change', ()=> enableDarkMode($('toggleDarkMode').checked) );
 
-/* ---------- COLORING ---------- */
+/* COLORING */
 function toggleColoring(enable){
   const historyList = $('historyList');
-  if(!enable){
-    historyList.classList.add('no-colors');
-    $('quickColor').checked = false;
-  } else {
-    historyList.classList.remove('no-colors');
-    $('quickColor').checked = true;
-  }
+  if(!enable){ historyList.classList.add('no-colors'); $('quickColor').checked = false; }
+  else { historyList.classList.remove('no-colors'); $('quickColor').checked = true; }
 }
-$('toggleColoring').addEventListener('change', ()=> toggleColoring($('toggleColoring').checked));
+$('toggleColoring').addEventListener('change', ()=> toggleColoring($('toggleColoring').checked) );
 
-/* ---------- TRANSLATOR (improved fallback) ---------- */
+/* TRANSLATOR - improved local fallback (SmartFallback): działa offline — prosty map + reguły */
 function improvedTranslate(text, source, target){
+  // phrase map for common user lines (extendable)
   const phraseMap = {
     'pl->de': {
       'hej, mógłbyś do mnie przyjść? potrzebuję pomocy': 'Hey, könntest du zu mir kommen? Ich brauche Hilfe.',
@@ -465,18 +465,11 @@ function improvedTranslate(text, source, target){
   const norm = text.trim().toLowerCase();
   if(phraseMap[key] && phraseMap[key][norm]) return phraseMap[key][norm];
 
+  // simple morphological heuristics (PL->DE)
   if(source==='pl' && target==='de'){
     const map = {
-      'hej':'Hey,',
-      'czy':'',
-      'możbyś':'könntest',
-      'mógbyś':'könntest',
-      'przyjść':'kommen',
-      'do':'zu',
-      'mnie':'mir',
-      'potrzebuję':'ich brauche',
-      'potrzebuje':'ich brauche',
-      'pomocy':'Hilfe'
+      'hej':'Hey,','czy':'','możbyś':'könntest','mógbyś':'könntest','przyjść':'kommen','przyjdź':'komm',
+      'do':'zu','mnie':'mir','potrzebuję':'ich brauche','potrzebuje':'ich brauche','pomocy':'Hilfe','po':'nach','racy':'Arbeit'
     };
     return text.split(/\s+/).map(w=>{
       const clean = w.replace(/[.,!?]/g,'').toLowerCase();
@@ -484,6 +477,7 @@ function improvedTranslate(text, source, target){
     }).join(' ').replace(/\s+/g,' ').trim();
   }
 
+  // DE->PL small map
   if(source==='de' && target==='pl'){
     const map = {'hund':'pies','haus':'dom','läuft':'biegnie','schnell':'szybko','ich':'ja','brauche':'potrzebuję','hilfe':'pomoc'};
     return text.split(/\s+/).map(w=>{
@@ -492,24 +486,25 @@ function improvedTranslate(text, source, target){
     }).join(' ');
   }
 
+  // fallback passthrough
   return text;
 }
 
-/* event translate */
+/* translate button */
 $('translateBtn').addEventListener('click', async ()=>{
   const qtext = $('sourceText').value.trim();
   if(!qtext){ alert('Wpisz tekst.'); return; }
   const out = $('translatedText'); out.value = 'Tłumaczę...';
   const source = $('langFrom').value; const target = $('langTo').value;
 
-  // try API placeholder -> fallback
+  // placeholder: call real API here if available -> otherwise fallback
   const res = improvedTranslate(qtext, source, target);
   out.value = res;
   saveHistory(qtext, res, source, target);
   renderHistory();
 });
 
-/* open google */
+/* google open */
 $('googleBtn').addEventListener('click', ()=>{
   const txt = encodeURIComponent($('sourceText').value || '');
   window.open('https://translate.google.com/?sl=auto&tl='+$('langTo').value+'&text='+txt, '_blank');
@@ -528,11 +523,9 @@ $('micBtn').addEventListener('click', ()=> {
   if(!recognition){ alert('Brak wsparcia mikrofonu.'); return; }
   recognition.start();
 });
+$('imgBtn').addEventListener('click', ()=> alert('OCR / upload dodać później.'));
 
-/* img placeholder */
-$('imgBtn').addEventListener('click', ()=> alert('OCR / upload dodać później.')) ;
-
-/* ---------- HISTORY: save / render / filter ---------- */
+/* HISTORY storage */
 function saveHistory(input, output, source='auto', target='auto'){
   const list = JSON.parse(localStorage.getItem('fri_history')||'[]');
   list.unshift({ input, output, source, target, date: new Date().toISOString() });
@@ -540,7 +533,7 @@ function saveHistory(input, output, source='auto', target='auto'){
   localStorage.setItem('fri_history', JSON.stringify(list));
 }
 
-/* search & filter */
+/* filters */
 $('histFilterBtn').addEventListener('click', renderHistory);
 $('histSearch').addEventListener('input', debounce(()=> renderHistory(), 300));
 
@@ -551,20 +544,18 @@ function renderHistory(){
   const lang = $('histLang').value;
 
   let list = raw.slice(0);
-
   if(lang !== 'all') list = list.filter(it => it.source === lang || it.target === lang);
-
-  if(search){
-    list = list.filter(it => (it.input||'').toLowerCase().includes(search) || (it.output||'').toLowerCase().includes(search));
-  }
+  if(search) list = list.filter(it => (it.input||'').toLowerCase().includes(search) || (it.output||'').toLowerCase().includes(search));
 
   if(!list.length){ box.innerHTML = '<p class="small">Brak wyników w historii.</p>'; return; }
 
+  // show newest first (already)
   list.forEach(item=>{
     const div = document.createElement('div'); div.className='history-item';
     const dateStr = new Date(item.date).toLocaleString();
     const showDates = $('toggleDates').checked;
-    const tokensHtml = tokenizeAndRender(item.input);
+    // ANALIZA: only when output language is german (target === 'de')
+    const tokensHtml = (item.target === 'de') ? tokenizeAndRender(item.output) : '';
     div.innerHTML = `
       <div class="date">${showDates ? escapeHtml(dateStr) : ''}</div>
       <div><b>Wejście:</b> ${escapeHtml(item.input)}</div>
@@ -582,7 +573,7 @@ $('clearHistoryBtn').addEventListener('click', ()=> {
   if(confirm('Wyczyścić historię?')){ localStorage.removeItem('fri_history'); renderHistory(); }
 });
 
-/* ---------- TOKENIZER + RENDER ---------- */
+/* TOKENIZER + RENDER for German output */
 const detMap = { der:'det-der', die:'det-die', das:'det-das' };
 
 function tokenizeAndRender(sentence){
@@ -608,22 +599,23 @@ function tokenizeAndRender(sentence){
   return tokens.map(t => `<span class="tok ${t.classes.join(' ')}">${escapeHtml(t.text)}</span>`).join(' ');
 }
 
-/* guessRole improved */
+/* very simple role guesser — tailored to German heuristics + small PL heuristics */
 function guessRole(word){
   const w = (word||'').replace(/[.,!?;:"]/g,'');
   const lw = w.toLowerCase();
   if(['in','im','ins','auf','an','mit','für','zu','nach','unter','über','zwischen','bei'].includes(lw)) return 'prep';
-  if(['schnell','langsam','heute','bald','gerne','schnell','szybko','wolno'].includes(lw)) return 'adv';
-  if(['ist','hat','läuft','geht','kommt','sieht','muss','kann','brauche','brauchen','potrzebuję','potrzebuje'].includes(lw)) return 'verb';
+  if(['schnell','langsam','heute','bald','gerne'].includes(lw)) return 'adv';
+  if(['ist','hat','läuft','geht','kommt','sieht','muss','kann','brauche','brauchen'].includes(lw)) return 'verb';
   if(word && word[0] === word[0].toUpperCase()) return 'noun';
-  if(lw.endsWith('y')||lw.endsWith('ny')||lw.endsWith('owy')||lw.endsWith('owa')||lw.endsWith('e')||lw.endsWith('i')) return 'adj';
+  if(lw.endsWith('en')||lw.endsWith('ung')||lw.endsWith('keit')||lw.endsWith('heit')) return 'noun';
+  if(lw.endsWith('ig')||lw.endsWith('lich')||lw.endsWith('isch')||lw.endsWith('ig')) return 'adj';
   return 'adj';
 }
 
-/* ---------- LEGEND toggle ---------- */
+/* legend toggle */
 $('legendToggle').addEventListener('click', ()=> $('legendArea').style.display = $('legendArea').style.display==='block' ? 'none' : 'block' );
 
-/* ---------- Nauka: articles quiz & flashcards ---------- */
+/* NAUKA: articles quiz & flashcards + irregulars + work phrases */
 const articles = [
   {word:'Tisch', article:'der', translation:'stół'},
   {word:'Frau', article:'die', translation:'kobieta'},
@@ -722,7 +714,7 @@ function seedWorkPhrases(){
 }
 seedWorkPhrases();
 
-/* add module button */
+/* add module */
 $('addModuleBtn').addEventListener('click', ()=>{
   const modules = $('modulesArea');
   const m = document.createElement('div'); m.className='module card';
@@ -731,18 +723,16 @@ $('addModuleBtn').addEventListener('click', ()=>{
   m.querySelector('[data-close]').addEventListener('click', ()=> m.remove());
 });
 
-/* ---------- small utils ---------- */
+/* utils */
 function shuffleArray(arr){ const c=[...arr]; for(let i=c.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]] } return c; }
 function debounce(fn,wait=200){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); } }
 
-/* ---------- INIT ---------- */
+/* INIT */
 (function init(){
-  // initial view
   translateCard.style.display='block'; historyCard.style.display='none'; learnCard.style.display='none';
-  // quick toggles reflect settings
   $('quickDark').checked = $('toggleDarkMode').checked;
   $('quickColor').checked = $('toggleColoring').checked;
-  // seed history if none
+  // seed history
   if(!localStorage.getItem('fri_history')){
     saveHistory('hej, mógłbyś do mnie przyjść? potrzebuję pomocy', 'Hey, könntest du zu mir kommen? Ich brauche Hilfe.', 'pl', 'de');
   }
