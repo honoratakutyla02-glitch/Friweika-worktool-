@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Friweika WorkTool — Prototype</title>
 <style>
-/* ================= PALETA I RESET ================= */
 :root{
   --fri-yellow:#FBD345;
   --fri-yellow-muted:#E8D58A;
@@ -17,12 +16,12 @@
   --text-dark:#2f2f2f;
   --muted:#7b7b7b;
 
-  /* rodzajniki (unikalne) */
+  /* rodzajniki */
   --det-der:#FF3B30;
   --det-die:#AF52DE;
   --det-das:#007BFF;
 
-  /* części mowy (kontrastowe i różne od rodzajników) */
+  /* części mowy (inne, kontrastowe) */
   --noun:#007B5A;
   --verb:#00A300;
   --adj:#FFC107;
@@ -30,9 +29,6 @@
   --prep:#FF9500;
 
   --card-bg:#ffffff;
-  --select-bg:#ffffff;
-  --select-bg-dark:#1a1a1a;
-  --select-color-dark:#e6e6e6;
 }
 
 /* reset */
@@ -45,10 +41,9 @@ body{
   color:var(--text-dark);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-  transition: background-color .2s, color .2s;
+  transition: background-color .18s, color .18s;
 }
 
-/* BACKGROUND */
 body::before{
   content:"";
   position:fixed; inset:0;
@@ -63,10 +58,10 @@ body::after{
   z-index:-1;
 }
 
-/* DARK MODE - global */
+/* dark mode */
 body.dark-mode{
-  background: #0b0b0b;
-  color: #e6e6e6;
+  background:#0b0b0b;
+  color:#e6e6e6;
 }
 body.dark-mode::after{
   content:"";
@@ -76,7 +71,7 @@ body.dark-mode::after{
 }
 body.dark-mode .card{ background:#0f1113 !important; color:#e6e6e6 !important; box-shadow:none; border:1px solid rgba(255,255,255,0.03) }
 
-/* HEADER */
+/* header */
 .header{
   background:var(--fri-red-mid);
   display:flex; align-items:center; justify-content:center;
@@ -86,106 +81,74 @@ body.dark-mode .card{ background:#0f1113 !important; color:#e6e6e6 !important; b
   position:absolute; left:18px; top:50%; transform:translateY(-50%);
   height:56px; width:auto; display:block;
 }
-.header h1{
-  margin:0; color:white; font-weight:900; font-size:20px; text-align:center;
-  line-height:1;
-}
-.header .menu-btn{
-  position:absolute; right:18px; top:50%; transform:translateY(-50%);
-  background:transparent; border:0; color:white; font-size:20px; cursor:pointer;
-}
-.header-sep{
-  height:6px;
-  background:var(--fri-yellow-muted);
-  box-shadow:0 1px 0 rgba(0,0,0,0.06);
-  border-bottom:1px solid rgba(0,0,0,0.03);
-}
+.header h1{ margin:0; color:white; font-weight:900; font-size:20px; text-align:center; line-height:1; }
+.header .menu-btn{ position:absolute; right:18px; top:50%; transform:translateY(-50%); background:transparent; border:0; color:white; font-size:20px; cursor:pointer; }
 
-/* LAYOUT */
+/* separator */
+.header-sep{ height:6px; background:var(--fri-yellow-muted); box-shadow:0 1px 0 rgba(0,0,0,0.06); border-bottom:1px solid rgba(0,0,0,0.03); }
+
+/* layout */
 .container{ max-width:980px; margin:20px auto; padding:18px; }
-.card{
-  background:var(--card-bg); border-radius:12px; padding:16px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.06);
-  transition:background .2s, color .2s, box-shadow .2s;
-}
+.card{ background:var(--card-bg); border-radius:12px; padding:16px; box-shadow:0 6px 20px rgba(0,0,0,0.06); transition:background .18s, color .18s, box-shadow .18s }
 
-/* FORM */
+/* form */
 label{ display:block; margin:8px 0; color:var(--fri-red); font-weight:700 }
 select,textarea,input[type="text"]{
-  width:100%; padding:12px; border-radius:8px; border:1px solid #e2e2e2;
-  font-size:15px; background:transparent;
-  color:inherit;
+  width:100%; padding:10px 12px; border-radius:8px; border:1px solid #e2e2e2; font-size:15px; background:transparent; color:inherit;
 }
-select{ background:var(--select-bg) }
-body.dark-mode select{ background:var(--select-bg-dark); color:var(--select-color-dark) }
 textarea{ min-height:120px; resize:vertical }
-.controls{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap }
+.controls{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; align-items:center }
 .btn{ padding:10px 14px; border-radius:8px; border:0; cursor:pointer; font-weight:700 }
 .btn-primary{ background:var(--fri-red); color:white }
 .btn-ghost{ background:#f6f6f6; border:1px solid #e2e2e2; color:#333 }
-body.dark-mode .btn-ghost{ background:#111; color:#ddd; border-color:#333 }
 
-/* NAV bottom */
-.nav{
-  position:fixed; left:0; right:0; bottom:0; height:70px;
-  background:#fff; border-top:4px solid var(--fri-yellow); display:flex; z-index:60;
+/* select dark styling */
+body.dark-mode select, body.dark-mode input, body.dark-mode textarea{
+  background:#0b0c0d; color:#e6e6e6; border:1px solid rgba(255,255,255,0.06);
 }
+
+/* nav bottom */
+.nav{ position:fixed; left:0; right:0; bottom:0; height:70px; background:#fff; border-top:4px solid var(--fri-yellow); display:flex; z-index:60; }
 body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-muted); }
 .nav .item{ flex:1; text-align:center; padding:12px 8px; cursor:pointer; color:#6b6b6b }
 .nav .item.active{ color:var(--fri-red); font-weight:800 }
 
-/* HISTORY */
-.history-item{
-  background:var(--card-bg); padding:14px; border-radius:10px; margin-bottom:12px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.04);
-}
+/* history */
+.history-item{ background:var(--card-bg); padding:14px; border-radius:10px; margin-bottom:12px; box-shadow:0 3px 10px rgba(0,0,0,0.04); }
 .history-item .date{ font-size:12px; color:var(--muted); margin-bottom:8px }
 
-/* LEGEND */
+/* legend */
 .legend{ background:#fff8d9; padding:10px; border-radius:8px; border:1px solid #f4e6b8 }
 .legend-row{ display:flex; gap:10px; align-items:center; margin:6px 0 }
 .color-box{ width:16px; height:16px; border-radius:4px }
 
-/* TOKENS */
+/* tokens */
 .tok{ display:inline-block; padding:4px 8px; border-radius:8px; margin-right:6px; font-weight:700; }
 .det-der{ color:var(--det-der) }
 .det-die{ color:var(--det-die) }
 .det-das{ color:var(--det-das) }
-
 .noun{ color:var(--noun) }
 .verb{ color:var(--verb) }
 .adj{ color:var(--adj) }
 .adv{ color:var(--adv) }
 .prep{ color:var(--prep) }
 
-/* NO COLORS (toggle off colors) */
-.no-colors .tok{ color:inherit; background:transparent; }
+/* no-colors */
+.no-colors .tok{ color:inherit; background:transparent }
 
-/* MODULES - Nauka & flashcard */
+/* flashcards small */
 .modules{ display:flex; flex-direction:column; gap:10px; margin-top:8px }
 .module{ padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.00)) }
-.flashcard{
-  width:220px; height:120px; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center;
-  border:1px solid #eee; perspective:800px; cursor:pointer;
-}
-.flashcard-inner{ position:relative; width:100%; height:100%; transition:transform .6s; transform-style:preserve-3d; }
-.flashcard.flipped .flashcard-inner{ transform:rotateY(180deg) }
-.flashcard-front, .flashcard-back{
-  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; backface-visibility:hidden; border-radius:8px;
-}
-.flashcard-back{ transform:rotateY(180deg); background:#fafafa }
 
-/* SMALL */
-.small{ font-size:13px; color:var(--muted) }
-
-/* FOOTER smaller */
+/* footer smaller */
 .footer{ background:var(--fri-red-dark); color:white; text-align:center; padding:10px 8px; border-top:4px solid var(--fri-yellow-muted); margin-top:16px }
 .footer img{ width:110px; display:block; margin:0 auto 6px; opacity:0.94 }
 
-/* responsive tweaks */
+/* small */
+.small{ font-size:13px; color:var(--muted) }
+
 @media (max-width:820px){
   .container{ padding:12px }
-  .flashcard{ width:180px; height:100px }
 }
 </style>
 </head>
@@ -201,7 +164,7 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
 
 <div class="container">
 
-  <!-- TRANSLATOR CARD -->
+  <!-- TRANSLATOR -->
   <div class="card" id="translateCard">
     <label>Język źródłowy:</label>
     <select id="langFrom">
@@ -232,7 +195,6 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
 
       <div style="flex:1"></div>
 
-      <!-- quick switches in translator header -->
       <label class="small" style="align-self:center;margin:0 6px 0 0">Dark: <input type="checkbox" id="quickDark"></label>
       <label class="small" style="align-self:center">Kolory: <input type="checkbox" id="quickColor" checked></label>
     </div>
@@ -242,15 +204,14 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
     <div id="debugNote" class="small" style="margin-top:6px;color:var(--muted)"></div>
   </div>
 
-  <!-- HISTORY CARD -->
+  <!-- HISTORY -->
   <div class="card" id="historyCard" style="margin-top:18px; display:none;">
     <h3>Historia tłumaczeń + analiza</h3>
 
-    <!-- history filters -->
     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px;">
       <input id="histSearch" type="text" placeholder="Szukaj w historii..." style="padding:8px;border-radius:8px;border:1px solid #e2e2e2;flex:1" />
       <select id="histLang" style="padding:8px;border-radius:8px;border:1px solid #e2e2e2">
-        <option value="all">Wszystkie języki</option>
+        <option value="all">Wszystkie</option>
         <option value="pl">PL</option>
         <option value="de">DE</option>
         <option value="en">EN</option>
@@ -277,20 +238,18 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
 
   </div>
 
-  <!-- NAUKA CARD -->
+  <!-- NAUKA (prosty seed) -->
   <div class="card" id="learnCard" style="margin-top:18px; display:none;">
     <h3>Nauka — moduły</h3>
     <div class="modules" id="modulesArea">
-      <!-- Module: Rodzajniki (domyślny) -->
       <div class="module card" id="module-articles">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Rodzajniki — ćwiczenia i fiszki</strong>
+          <strong>Rodzajniki — ćwiczenia</strong>
           <div style="display:flex;gap:8px">
             <button id="shuffleArticles" class="btn-ghost">Nowe</button>
             <button id="toggleArticlesList" class="btn-ghost">Pokaż listę</button>
           </div>
         </div>
-
         <div style="margin-top:10px; display:flex; gap:12px; flex-wrap:wrap;">
           <div id="articleQuiz" style="display:flex; gap:10px; flex-wrap:wrap"></div>
           <div style="min-width:220px">
@@ -300,21 +259,17 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- Module: Czasowniki nieregularne (skrót) -->
       <div class="module card">
         <strong>Czasowniki nieregularne (ściąga)</strong>
         <div style="margin-top:10px" id="irregularTableArea"></div>
       </div>
 
-      <!-- Module: Zdania robocze -->
       <div class="module card">
         <strong>Zdania robocze</strong>
         <div style="margin-top:8px" id="workPhrasesArea"></div>
       </div>
-
     </div>
 
     <div style="margin-top:12px"><button id="addModuleBtn" class="btn-ghost">Dodaj moduł</button></div>
@@ -322,20 +277,20 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
 
 </div>
 
-<!-- FOOTER -->
+<!-- footer -->
 <div class="footer">
   <img src="assets/friweika-logo.png" alt="Friweika logo" />
   <div class="note">Wersja testowa Friweika — Prototype</div>
 </div>
 
-<!-- NAV -->
+<!-- nav -->
 <div class="nav">
   <div class="item active" data-tab="translate">💬 Tłumacz</div>
   <div class="item" data-tab="history">🕘 Historia</div>
   <div class="item" data-tab="learn">🧠 Nauka</div>
 </div>
 
-<!-- SETTINGS PANEL -->
+<!-- settings panel (simple) -->
 <div id="settingsPanel" class="card" style="position:fixed; right:16px; top:92px; width:320px; display:none; z-index:999;">
   <h3>Ustawienia</h3>
   <label>Tryb ciemny (globalnie):</label>
@@ -347,15 +302,6 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
   <label style="margin-top:10px">Pokaż daty w historii:</label>
   <input type="checkbox" id="toggleDates" checked />
 
-  <label style="margin-top:10px">Język aplikacji (UI):</label>
-  <select id="appLang">
-    <option value="pl">Polski</option>
-    <option value="de">Deutsch</option>
-    <option value="en">English</option>
-    <option value="uk">Українська</option>
-    <option value="ar">العربية</option>
-  </select>
-
   <div style="margin-top:12px; display:flex; gap:8px;">
     <button id="saveSettings" class="btn-ghost">Zapisz</button>
     <button id="closeSettings" class="btn-ghost">Zamknij</button>
@@ -363,14 +309,12 @@ body.dark-mode .nav{ background:#0b0b0b; border-top:4px solid var(--fri-yellow-m
 </div>
 
 <script>
-/* Final JS — tryb 1: historia = Wejście + Wyjście + analiza tylko dla WYJŚCIA=de */
-
-/* helpers */
+/* ---------- helper ---------- */
 const $ = id => document.getElementById(id);
 const qsa = sel => document.querySelectorAll(sel);
 const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-/* NAV */
+/* ---------- nav ---------- */
 const tabs = qsa('.nav .item');
 const translateCard = $('translateCard');
 const historyCard = $('historyCard');
@@ -388,43 +332,40 @@ tabs.forEach(t=>{
   });
 });
 
-/* SETTINGS */
+/* ---------- settings ---------- */
 const menuBtn = $('menuBtn');
 const settingsPanel = $('settingsPanel');
 menuBtn.addEventListener('click', ()=> settingsPanel.style.display = settingsPanel.style.display==='block' ? 'none' : 'block' );
 $('closeSettings').addEventListener('click', ()=> settingsPanel.style.display='none' );
 
-/* load saved settings */
+/* load saved */
 const savedDark = localStorage.getItem('fw_dark') === '1';
 const savedColor = localStorage.getItem('fw_coloring') !== '0';
 const savedDates = localStorage.getItem('fw_dates') !== '0';
-const savedAppLang = localStorage.getItem('fw_appLang') || 'pl';
 
 $('toggleDarkMode').checked = savedDark;
 $('toggleColoring').checked = savedColor;
 $('toggleDates').checked = savedDates;
-$('appLang').value = savedAppLang;
 
-/* quick toggles */
+/* quick toggles mirror */
 $('quickDark').checked = savedDark;
 $('quickColor').checked = savedColor;
 
-/* apply */
+/* apply initial */
 if(savedDark) enableDarkMode(true);
 if(!savedColor) toggleColoring(false);
 
-/* save settings */
+/* save */
 $('saveSettings').addEventListener('click', ()=>{
   localStorage.setItem('fw_dark', $('toggleDarkMode').checked ? '1':'0');
   localStorage.setItem('fw_coloring', $('toggleColoring').checked ? '1':'0');
   localStorage.setItem('fw_dates', $('toggleDates').checked ? '1':'0');
-  localStorage.setItem('fw_appLang', $('appLang').value);
   alert('Zapisano ustawienia.');
   settingsPanel.style.display='none';
   renderHistory();
 });
 
-/* mirror quick toggles */
+/* quick toggles */
 $('quickDark').addEventListener('change', e => {
   $('toggleDarkMode').checked = e.target.checked;
   enableDarkMode(e.target.checked);
@@ -434,83 +375,74 @@ $('quickColor').addEventListener('change', e => {
   toggleColoring(e.target.checked);
 });
 
-/* DARK MODE */
+/* ---------- dark ---------- */
 function enableDarkMode(enable){
-  if(enable){ document.body.classList.add('dark-mode'); $('quickDark').checked = true; }
-  else { document.body.classList.remove('dark-mode'); $('quickDark').checked = false; }
+  if(enable){
+    document.body.classList.add('dark-mode');
+    $('quickDark').checked = true;
+  } else {
+    document.body.classList.remove('dark-mode');
+    $('quickDark').checked = false;
+  }
 }
-$('toggleDarkMode').addEventListener('change', ()=> enableDarkMode($('toggleDarkMode').checked) );
+$('toggleDarkMode').addEventListener('change', ()=> enableDarkMode($('toggleDarkMode').checked));
 
-/* COLORING */
+/* ---------- coloring ---------- */
 function toggleColoring(enable){
-  const historyList = $('historyList');
-  if(!enable){ historyList.classList.add('no-colors'); $('quickColor').checked = false; }
-  else { historyList.classList.remove('no-colors'); $('quickColor').checked = true; }
+  const list = $('historyList');
+  if(!enable) list.classList.add('no-colors'); else list.classList.remove('no-colors');
 }
-$('toggleColoring').addEventListener('change', ()=> toggleColoring($('toggleColoring').checked) );
+$('toggleColoring').addEventListener('change', ()=> toggleColoring($('toggleColoring').checked));
 
-/* TRANSLATOR - improved local fallback (SmartFallback): działa offline — prosty map + reguły */
-function improvedTranslate(text, source, target){
-  // phrase map for common user lines (extendable)
-  const phraseMap = {
-    'pl->de': {
-      'hej, mógłbyś do mnie przyjść? potrzebuję pomocy': 'Hey, könntest du zu mir kommen? Ich brauche Hilfe.',
-      'czy możesz przyjść i mi pomóc?': 'Kannst du kommen und mir helfen?'
-    },
-    'de->pl': {
-      'der hund läuft schnell in das haus.': 'Pies biegnie szybko do domu.'
+/* ---------- translate: uses your /api/translate endpoint ---------- */
+async function callTranslateAPI(q, source, target){
+  // Calls your serverless endpoint exactly as in your saved file
+  try{
+    const res = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ q, source, target })
+    });
+    if(!res.ok){
+      const txt = await res.text();
+      throw new Error('API error: ' + res.status + ' ' + txt.slice(0,200));
     }
-  };
-  const key = `${source}->${target}`;
-  const norm = text.trim().toLowerCase();
-  if(phraseMap[key] && phraseMap[key][norm]) return phraseMap[key][norm];
-
-  // simple morphological heuristics (PL->DE)
-  if(source==='pl' && target==='de'){
-    const map = {
-      'hej':'Hey,','czy':'','możbyś':'könntest','mógbyś':'könntest','przyjść':'kommen','przyjdź':'komm',
-      'do':'zu','mnie':'mir','potrzebuję':'ich brauche','potrzebuje':'ich brauche','pomocy':'Hilfe','po':'nach','racy':'Arbeit'
-    };
-    return text.split(/\s+/).map(w=>{
-      const clean = w.replace(/[.,!?]/g,'').toLowerCase();
-      return map[clean] ? map[clean] : w;
-    }).join(' ').replace(/\s+/g,' ').trim();
+    const j = await res.json();
+    if(j && j.ok && typeof j.translation === 'string') return j.translation;
+    if(j && j.translation) return j.translation;
+    throw new Error('Invalid API response');
+  }catch(err){
+    console.error('translate API error', err);
+    throw err;
   }
-
-  // DE->PL small map
-  if(source==='de' && target==='pl'){
-    const map = {'hund':'pies','haus':'dom','läuft':'biegnie','schnell':'szybko','ich':'ja','brauche':'potrzebuję','hilfe':'pomoc'};
-    return text.split(/\s+/).map(w=>{
-      const clean = w.replace(/[.,!?"]/g,'').toLowerCase();
-      return map[clean] ? map[clean] : w;
-    }).join(' ');
-  }
-
-  // fallback passthrough
-  return text;
 }
 
-/* translate button */
 $('translateBtn').addEventListener('click', async ()=>{
-  const qtext = $('sourceText').value.trim();
-  if(!qtext){ alert('Wpisz tekst.'); return; }
-  const out = $('translatedText'); out.value = 'Tłumaczę...';
-  const source = $('langFrom').value; const target = $('langTo').value;
+  const q = $('sourceText').value.trim();
+  if(!q){ alert('Wpisz tekst.'); return; }
+  const source = $('langFrom').value;
+  const target = $('langTo').value;
+  const out = $('translatedText'); out.value = 'Tłumaczę...'; $('debugNote').textContent='';
 
-  // placeholder: call real API here if available -> otherwise fallback
-  const res = improvedTranslate(qtext, source, target);
-  out.value = res;
-  saveHistory(qtext, res, source, target);
-  renderHistory();
+  try{
+    const translation = await callTranslateAPI(q, source, target);
+    out.value = translation;
+    // save and render: original + colored translation (German analysis)
+    saveHistory(q, translation, source, target);
+    renderHistory();
+  }catch(e){
+    out.value = '';
+    $('debugNote').textContent = 'Błąd API: ' + (e.message || 'nieznany');
+  }
 });
 
-/* google open */
+/* google */
 $('googleBtn').addEventListener('click', ()=>{
   const txt = encodeURIComponent($('sourceText').value || '');
-  window.open('https://translate.google.com/?sl=auto&tl='+$('langTo').value+'&text='+txt, '_blank');
+  window.open('https://translate.google.com/?sl=auto&tl='+$('langTo').value+'&text='+txt,'_blank');
 });
 
-/* mic placeholder */
+/* mic */
 let recognition;
 if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -519,23 +451,21 @@ if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
   recognition.interimResults = false;
   recognition.onresult = e => $('sourceText').value = [...e.results].map(r=>r[0].transcript).join('');
 }
-$('micBtn').addEventListener('click', ()=> {
+$('micBtn').addEventListener('click', ()=>{
   if(!recognition){ alert('Brak wsparcia mikrofonu.'); return; }
   recognition.start();
 });
-$('imgBtn').addEventListener('click', ()=> alert('OCR / upload dodać później.'));
 
-/* HISTORY storage */
+/* ---------- history ---------- */
 function saveHistory(input, output, source='auto', target='auto'){
   const list = JSON.parse(localStorage.getItem('fri_history')||'[]');
   list.unshift({ input, output, source, target, date: new Date().toISOString() });
-  if(list.length>200) list.length=200;
+  if(list.length>200) list.length = 200;
   localStorage.setItem('fri_history', JSON.stringify(list));
 }
 
-/* filters */
 $('histFilterBtn').addEventListener('click', renderHistory);
-$('histSearch').addEventListener('input', debounce(()=> renderHistory(), 300));
+$('histSearch').addEventListener('input', debounce(()=> renderHistory(), 250));
 
 function renderHistory(){
   const raw = JSON.parse(localStorage.getItem('fri_history')||'[]');
@@ -545,22 +475,21 @@ function renderHistory(){
 
   let list = raw.slice(0);
   if(lang !== 'all') list = list.filter(it => it.source === lang || it.target === lang);
-  if(search) list = list.filter(it => (it.input||'').toLowerCase().includes(search) || (it.output||'').toLowerCase().includes(search));
-
+  if(search){
+    list = list.filter(it => (it.input||'').toLowerCase().includes(search) || (it.output||'').toLowerCase().includes(search));
+  }
   if(!list.length){ box.innerHTML = '<p class="small">Brak wyników w historii.</p>'; return; }
 
-  // show newest first (already)
   list.forEach(item=>{
-    const div = document.createElement('div'); div.className='history-item';
+    const div = document.createElement('div'); div.className = 'history-item';
     const dateStr = new Date(item.date).toLocaleString();
     const showDates = $('toggleDates').checked;
-    // ANALIZA: only when output language is german (target === 'de')
-    const tokensHtml = (item.target === 'de') ? tokenizeAndRender(item.output) : '';
+    // note: we show ORIGINAL (input) and then IMMEDIATELY the COLORED OUTPUT
+    const colored = tokenizeAndRender(item.output, item.target || '');
     div.innerHTML = `
       <div class="date">${showDates ? escapeHtml(dateStr) : ''}</div>
-      <div><b>Wejście:</b> ${escapeHtml(item.input)}</div>
-      <div style="margin-top:6px"><b>Wyjście:</b> ${escapeHtml(item.output)}</div>
-      <div class="hist-colored" style="margin-top:8px">${tokensHtml}</div>
+      <div style="margin-top:6px">${escapeHtml(item.input)}</div>
+      <div class="hist-colored" style="margin-top:8px">${colored}</div>
     `;
     box.appendChild(div);
   });
@@ -568,54 +497,62 @@ function renderHistory(){
   if(!$('toggleColoring').checked) box.classList.add('no-colors'); else box.classList.remove('no-colors');
 }
 
-/* clear history */
-$('clearHistoryBtn').addEventListener('click', ()=> {
+$('clearHistoryBtn').addEventListener('click', ()=>{
   if(confirm('Wyczyścić historię?')){ localStorage.removeItem('fri_history'); renderHistory(); }
 });
 
-/* TOKENIZER + RENDER for German output */
+/* ---------- tokenizer/render (focus German) ---------- */
 const detMap = { der:'det-der', die:'det-die', das:'det-das' };
 
-function tokenizeAndRender(sentence){
+function tokenizeAndRender(sentence, lang=''){
   if(!sentence) return '';
+  // if language is german (or target=de) then run german-aware tokenization
   const parts = sentence.split(/\s+/).filter(Boolean);
   const tokens = [];
   for(let i=0;i<parts.length;i++){
     const raw = parts[i];
-    const clean = raw.replace(/[.,!?;:"]/g,'');
+    const trailing = raw.match(/[.,!?;:]+$/) ? raw.match(/[.,!?;:]+$/)[0] : '';
+    const clean = raw.replace(/[.,!?;:]+$/,'');
     const lower = clean.toLowerCase();
 
-    if(detMap[lower] && parts[i+1]){
-      const next = parts[i+1].replace(/[.,!?;:"]/g,'');
-      const role = guessRole(next);
-      tokens.push({ text: clean + ' ' + next, classes: [detMap[lower], role] });
-      i++; continue;
+    if(lang==='de' && detMap[lower] && parts[i+1]){
+      // combine with next word (article + noun) to keep together
+      const nextRaw = parts[i+1];
+      const nextClean = nextRaw.replace(/[.,!?;:]+$/,'');
+      const role = guessRole(nextClean, 'de');
+      tokens.push({ text: clean + ' ' + nextClean + trailing, classes: [detMap[lower], role] });
+      i++; // skip next
+      continue;
     }
 
-    const role = guessRole(clean);
-    tokens.push({ text: clean, classes: [role] });
+    const role = guessRole(clean, lang);
+    tokens.push({ text: clean + trailing, classes: [role] });
   }
 
   return tokens.map(t => `<span class="tok ${t.classes.join(' ')}">${escapeHtml(t.text)}</span>`).join(' ');
 }
 
-/* very simple role guesser — tailored to German heuristics + small PL heuristics */
-function guessRole(word){
+function guessRole(word, lang){
   const w = (word||'').replace(/[.,!?;:"]/g,'');
   const lw = w.toLowerCase();
-  if(['in','im','ins','auf','an','mit','für','zu','nach','unter','über','zwischen','bei'].includes(lw)) return 'prep';
-  if(['schnell','langsam','heute','bald','gerne'].includes(lw)) return 'adv';
-  if(['ist','hat','läuft','geht','kommt','sieht','muss','kann','brauche','brauchen'].includes(lw)) return 'verb';
-  if(word && word[0] === word[0].toUpperCase()) return 'noun';
-  if(lw.endsWith('en')||lw.endsWith('ung')||lw.endsWith('keit')||lw.endsWith('heit')) return 'noun';
-  if(lw.endsWith('ig')||lw.endsWith('lich')||lw.endsWith('isch')||lw.endsWith('ig')) return 'adj';
+  // german preps
+  if(lang==='de' && ['in','im','ins','auf','an','mit','für','zu','nach','unter','über','zwischen','bei','aus'].includes(lw)) return 'prep';
+  // adverbs
+  if(['schnell','langsam','heute','bald','gerne','noch','bald','schnell','schneller','schnelle'].includes(lw)) return 'adv';
+  // verbs common (de/pl fallback)
+  if(['ist','hat','läuft','geht','kommt','sieht','macht','sind','bin','war','haben','brauche','muss','kann'].includes(lw)) return 'verb';
+  // German nouns capitalized
+  if(word && word[0]===word[0].toUpperCase()) return 'noun';
+  // heuristics for pl endings
+  if(lw.endsWith('y')||lw.endsWith('ny')||lw.endsWith('owy')||lw.endsWith('owa')||lw.endsWith('e')||lw.endsWith('i')) return 'adj';
+  // default
   return 'adj';
 }
 
-/* legend toggle */
+/* ---------- legend toggle ---------- */
 $('legendToggle').addEventListener('click', ()=> $('legendArea').style.display = $('legendArea').style.display==='block' ? 'none' : 'block' );
 
-/* NAUKA: articles quiz & flashcards + irregulars + work phrases */
+/* ---------- Nauka seeds ---------- */
 const articles = [
   {word:'Tisch', article:'der', translation:'stół'},
   {word:'Frau', article:'die', translation:'kobieta'},
@@ -629,7 +566,7 @@ const articles = [
 ];
 
 function seedArticleQuiz(){
-  const area = $('articleQuiz'); area.innerHTML = '';
+  const area = $('articleQuiz'); if(!area) return; area.innerHTML = '';
   const sample = shuffleArray(articles).slice(0,4);
   sample.forEach(a=>{
     const card = document.createElement('div'); card.style='border:1px solid #eee;padding:10px;border-radius:8px;background:#fff;min-width:180px';
@@ -653,9 +590,8 @@ function seedArticleQuiz(){
 $('shuffleArticles').addEventListener('click', seedArticleQuiz);
 seedArticleQuiz();
 
-/* flashcards */
 function seedFlashcards(){
-  const area = $('flashcardArea'); area.innerHTML = '';
+  const area = $('flashcardArea'); if(!area) return; area.innerHTML = '';
   const set = shuffleArray(articles).slice(0,4);
   set.forEach(a=>{
     const fc = document.createElement('div'); fc.className='flashcard'; fc.tabIndex=0;
@@ -669,9 +605,8 @@ function seedFlashcards(){
 }
 seedFlashcards();
 
-/* irregular verbs table */
 function seedIrregularTable(){
-  const area = $('irregularTableArea'); area.innerHTML = '';
+  const area = $('irregularTableArea'); if(!area) return; area.innerHTML = '';
   const list = [
     {inf:'sein', pres:'ich bin', pret:'ich war', part:'gewesen', pl:'być'},
     {inf:'haben', pres:'ich habe', pret:'ich hatte', part:'gehabt', pl:'mieć'},
@@ -696,9 +631,8 @@ function seedIrregularTable(){
 }
 seedIrregularTable();
 
-/* work phrases */
 function seedWorkPhrases(){
-  const area = $('workPhrasesArea'); area.innerHTML = '';
+  const area = $('workPhrasesArea'); if(!area) return; area.innerHTML = '';
   const phrases = [
     {pl:'Czy możesz mi pomóc?', de:'Kannst du mir helfen?'},
     {pl:'Masz chwilę?', de:'Hast du kurz Zeit?'},
@@ -727,15 +661,12 @@ $('addModuleBtn').addEventListener('click', ()=>{
 function shuffleArray(arr){ const c=[...arr]; for(let i=c.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [c[i],c[j]]=[c[j],c[i]] } return c; }
 function debounce(fn,wait=200){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); } }
 
-/* INIT */
+/* init */
 (function init(){
   translateCard.style.display='block'; historyCard.style.display='none'; learnCard.style.display='none';
   $('quickDark').checked = $('toggleDarkMode').checked;
   $('quickColor').checked = $('toggleColoring').checked;
-  // seed history
-  if(!localStorage.getItem('fri_history')){
-    saveHistory('hej, mógłbyś do mnie przyjść? potrzebuję pomocy', 'Hey, könntest du zu mir kommen? Ich brauche Hilfe.', 'pl', 'de');
-  }
+  if(!localStorage.getItem('fri_history')) saveHistory('hej, mógłbyś do mnie przyjść? potrzebuję pomocy', 'Hey, könntest du zu mir kommen? Ich brauche Hilfe.', 'pl', 'de');
   renderHistory();
 })();
 </script>
